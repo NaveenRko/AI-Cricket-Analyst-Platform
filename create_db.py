@@ -1,51 +1,60 @@
 import duckdb
 import pandas as pd
+import os
 
-conn = duckdb.connect("database/ipl.duckdb")
 
-tables = {
-    "matches": "data/matches.csv",
-    "deliveries": "data/deliveries.csv",
-    "players": "data/players.csv",
+def create_database():
 
-    "batting_stats": "data/batting_stats.csv",
-    "bowling_stats": "data/bowling_stats.csv",
+    os.makedirs("database", exist_ok=True)
 
-    "team_match_stats": "data/team_match_stats.csv",
-    "team_season_stats": "data/team_season_stats.csv",
+    conn = duckdb.connect("database/ipl.duckdb")
 
-    "player_match_stats": "data/player_match_stats.csv",
-    "player_season_stats": "data/player_season_stats.csv",
+    tables = {
+        "matches": "Data/matches.csv",
+        "deliveries": "Data/deliveries.csv",
+        "players": "Data/players.csv",
 
-    "phase_batting": "data/phase_batting.csv",
-    "phase_bowling": "data/phase_bowling.csv",
+        "batting_stats": "Data/batting_stats.csv",
+        "bowling_stats": "Data/bowling_stats.csv",
 
-    "player_vs_player": "data/player_vs_player.csv",
+        "team_match_stats": "Data/team_match_stats.csv",
+        "team_season_stats": "Data/team_season_stats.csv",
 
-    "venue_stats": "data/venue_stats.csv",
-    "bowler_match_stats": "data/bowler_match_stats.csv",
-    "bowler_season_stats": "data/bowler_season_stats.csv",
-    "player_milestones": "data/player_milestones.csv",
-    "venue_match_stats": "data/venue_match_stats.csv"
-}
+        "player_match_stats": "Data/player_match_stats.csv",
+        "player_season_stats": "Data/player_season_stats.csv",
 
-for table_name, file_path in tables.items():
+        "phase_batting": "Data/phase_batting.csv",
+        "phase_bowling": "Data/phase_bowling.csv",
 
-    df = pd.read_csv(file_path)
+        "player_vs_player": "Data/player_vs_player.csv",
 
-    conn.register("temp_df", df)
+        "venue_stats": "Data/venue_stats.csv",
+        "bowler_match_stats": "Data/bowler_match_stats.csv",
+        "bowler_season_stats": "Data/bowler_season_stats.csv",
+        "player_milestones": "Data/player_milestones.csv",
+        "venue_match_stats": "Data/venue_match_stats.csv"
+    }
 
-    conn.execute(f"""
-        CREATE OR REPLACE TABLE {table_name}
-        AS SELECT * FROM temp_df
-    """)
+    for table_name, file_path in tables.items():
 
-print("\nTables Created:\n")
+        print(f"Creating table: {table_name}")
 
-for t in conn.execute("SHOW TABLES").fetchall():
-    print(t[0])
+        df = pd.read_csv(file_path)
 
-conn.close()
+        conn.register("temp_df", df)
+
+        conn.execute(f"""
+            CREATE OR REPLACE TABLE {table_name}
+            AS SELECT * FROM temp_df
+        """)
+
+    print("\nTables Created Successfully:\n")
+
+    for table in conn.execute("SHOW TABLES").fetchall():
+        print(table[0])
+
+    conn.close()
+
 
 if __name__ == "__main__":
     create_database()
