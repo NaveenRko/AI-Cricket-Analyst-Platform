@@ -1,3 +1,10 @@
+import os
+
+# Create database automatically if missing
+if not os.path.exists("database/ipl.duckdb"):
+    from create_db import create_database
+    create_database()
+
 import streamlit as st
 
 from langchain_groq import ChatGroq

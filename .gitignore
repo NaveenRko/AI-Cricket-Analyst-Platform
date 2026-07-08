@@ -1,36 +1,18 @@
+# Database
+database/*.duckdb
+
+# Logs
+logs/
+
 # Python
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
 
-# Virtual environments
-venv/
-env/
-.venv/
+# Environment
+.env
 
 # Jupyter
 .ipynb_checkpoints/
 
-# Environment variables
-.env
-
-# Streamlit
-.streamlit/secrets.toml
-
-# IDE
-.vscode/
-.idea/
-	
-# Logs
-logs/*.csv
-
-# Models (optional if large)
-*.pkl
-
-# FAISS (optional if rebuilding)
-# rag/faiss_index/
-
-# OS
-.DS_Store
-Thumbs.db
+# Streamlit cache
+.streamlit/

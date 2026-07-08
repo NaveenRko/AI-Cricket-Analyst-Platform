@@ -46,3 +46,6 @@ for t in conn.execute("SHOW TABLES").fetchall():
     print(t[0])
 
 conn.close()
+
+if __name__ == "__main__":
+    create_database()
