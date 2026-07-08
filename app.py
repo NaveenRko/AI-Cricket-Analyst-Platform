@@ -238,6 +238,8 @@ if st.button("Analyze"):
                 # ---------------------
                 # Latency time
                 response_time = round(time.time() - start_time,2)
+
+                os.makedirs("logs", exist_ok=True)
                 
                 log = pd.DataFrame([{
                     "timestamp": datetime.now(),
@@ -260,6 +262,21 @@ if st.button("Analyze"):
                     header=not file_exists,                
                     index=False                
                 )
+                from database.logger import save_query
+
+                save_query({
+                
+                    "question": question,
+                
+                    "rewritten_question": rewritten_question,
+                
+                    "agent_selected": agent_type,
+                
+                    "final_answer": final_answer,
+                
+                    "response_time": response_time
+                
+                })
 
             except Exception as e:
 

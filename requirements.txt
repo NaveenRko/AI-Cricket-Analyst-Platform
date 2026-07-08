@@ -31,3 +31,5 @@ xgboost
 joblib
 
 plotly
+
+supabase
