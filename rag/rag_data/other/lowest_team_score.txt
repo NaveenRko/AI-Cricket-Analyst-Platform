@@ -1,0 +1,19 @@
+lowest Team Score in IPL
+
+The lowest team total in IPL history is 49
+
+Team:
+Royal Challengers Bengaluru
+
+Opponent:
+Kolkata Knight Riders
+
+Season:
+2017
+
+Venue:
+Eden Gardens
+
+Why this record matters:
+This is the lowest score ever recorded in the Indian Premier League.
+
