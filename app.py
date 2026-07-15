@@ -253,8 +253,7 @@ if st.button("Analyze"):
                 )
                 from database.logger import save_query
 
-                save_query({
-                
+                query_log_id = save_query({
                     "question": question,
                 
                     "rewritten_question": rewritten_question,
@@ -266,6 +265,16 @@ if st.button("Analyze"):
                     "response_time": response_time
                 
                 })
+                save_sql_log(
+                    query_log_id=query_log_id,
+            
+                    generated_sql=result["generated_sql"],
+                
+                    sql_result=result["result"],
+                
+                    error=result["error"]
+                
+                )
 
             except Exception as e:
 

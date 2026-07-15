@@ -2,7 +2,6 @@ import duckdb
 
 from langchain_core.prompts import PromptTemplate
 
-
 DATABASE = "database/ipl.duckdb"
 
 
@@ -10,7 +9,6 @@ SQL_PROMPT = """
 {schema}
 
 User Question:
-
 {question}
 
 SQL:
@@ -33,13 +31,12 @@ def generate_and_execute_sql(
 
     chain = prompt | llm
 
-    response = chain.invoke({
-
-        "schema": schema,
-
-        "question": question
-
-    })
+    response = chain.invoke(
+        {
+            "schema": schema,
+            "question": question
+        }
+    )
 
     sql = response.content.strip()
 
@@ -47,16 +44,13 @@ def generate_and_execute_sql(
     sql = sql.replace("```", "")
     sql = sql.strip()
 
+    # Safety check
     if not sql.lower().startswith("select"):
 
         return {
-
             "generated_sql": sql,
-
-            "result": None,
-
-            "error": "Model generated non SELECT query"
-
+            "result": [],
+            "error": "Model generated a non-SELECT query."
         }
 
     try:
@@ -67,11 +61,14 @@ def generate_and_execute_sql(
 
         conn.close()
 
+        # ---------- Convert dataframe to JSON serializable ----------
+        records = df.to_dict(orient="records")
+
         return {
 
             "generated_sql": sql,
 
-            "result": df,
+            "result": records,
 
             "error": None
 
@@ -83,7 +80,7 @@ def generate_and_execute_sql(
 
             "generated_sql": sql,
 
-            "result": None,
+            "result": [],
 
             "error": str(e)
 
