@@ -6,15 +6,6 @@ def get_hybrid_answer(
     question,
     sql_result_function
 ):
-    """
-    sql_result_function:
-        get_batting_result
-        get_bowling_result
-        get_team_result
-        get_season_result
-        get_venue_result
-        get_matchup_result
-    """
 
     # ----------------------------------------
     # SQL
@@ -25,28 +16,35 @@ def get_hybrid_answer(
         question
     )
 
-    sql_answer = sql_result["result"]
+    sql_df = sql_result["result_df"]
+
+    sql_answer = sql_result["result_text"]
+
+    generated_sql = sql_result["generated_sql"]
+
+    sql_json = sql_result["result_json"]
 
     # ----------------------------------------
-    # Decide if RAG is needed
+    # Decide whether RAG is needed
     # ----------------------------------------
 
     use_rag = False
 
-    if isinstance(sql_answer, str):
+    if sql_df is None:
 
-        lower = sql_answer.lower()
+        use_rag = True
 
-        if (
-            "no statistics" in lower
-            or "not available" in lower
-            or "no rows" in lower
-        ):
-            use_rag = True
+    elif sql_df.empty:
+
+        use_rag = True
 
     rag_answer = ""
 
     rag_docs = []
+
+    # ----------------------------------------
+    # RAG
+    # ----------------------------------------
 
     if use_rag:
 
@@ -66,8 +64,15 @@ def get_hybrid_answer(
     if not use_rag:
 
         return {
+
             "answer": sql_answer,
+
+            "generated_sql": generated_sql,
+
+            "sql_result": sql_json,
+
             "rag_docs": []
+
         }
 
     # ----------------------------------------
@@ -80,28 +85,27 @@ You are a senior IPL analyst.
 Question:
 {question}
 
-SQL Result:
+SQL Statistics:
 {sql_answer}
 
-Knowledge:
+Knowledge Base:
 {rag_answer}
 
-Rules
+Rules:
 
 1. SQL is the primary source.
 
-2. Use RAG only if SQL lacks statistics.
+2. Use RAG only when SQL contains no statistics.
 
 3. Never invent statistics.
 
-4. Never mention SQL.
+4. Never mention SQL or databases.
 
-5. Never mention RAG.
+5. Never mention RAG or knowledge base.
 
-6. Write naturally.
+6. Keep the answer concise and natural.
 
-7. If both have no answer,
-say:
+7. If both SQL and RAG contain no information, reply:
 
 Information not available.
 
@@ -113,7 +117,13 @@ Final Answer:
     return {
 
         "answer": response.content,
-
+    
+        "generated_sql": generated_sql,
+    
+        "sql_result": sql_json,
+    
+        "sql_error": sql_result["error"],
+    
         "rag_docs": rag_docs
-
+    
     }

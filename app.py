@@ -252,6 +252,7 @@ if st.button("Analyze"):
                     index=False                
                 )
                 from database.logger import save_query
+                from database.logger import save_sql_log
 
                 query_log_id = save_query({
                     "question": question,
@@ -266,13 +267,14 @@ if st.button("Analyze"):
                 
                 })
                 save_sql_log(
+
                     query_log_id=query_log_id,
-            
+                
                     generated_sql=result["generated_sql"],
                 
-                    sql_result=result["result"],
+                    sql_result=result["sql_result"],
                 
-                    error=result["error"]
+                    error=result["sql_error"]
                 
                 )
 

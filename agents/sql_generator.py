@@ -4,7 +4,6 @@ from langchain_core.prompts import PromptTemplate
 
 DATABASE = "database/ipl.duckdb"
 
-
 SQL_PROMPT = """
 {schema}
 
@@ -44,13 +43,24 @@ def generate_and_execute_sql(
     sql = sql.replace("```", "")
     sql = sql.strip()
 
-    # Safety check
+    # -------------------------------
+    # Safety Check
+    # -------------------------------
+
     if not sql.lower().startswith("select"):
 
         return {
+
             "generated_sql": sql,
-            "result": [],
+
+            "result_df": None,
+
+            "result_json": [],
+
+            "result_text": "Model generated a non-SELECT query.",
+
             "error": "Model generated a non-SELECT query."
+
         }
 
     try:
@@ -61,14 +71,15 @@ def generate_and_execute_sql(
 
         conn.close()
 
-        # ---------- Convert dataframe to JSON serializable ----------
-        records = df.to_dict(orient="records")
-
         return {
 
             "generated_sql": sql,
 
-            "result": records,
+            "result_df": df,
+
+            "result_json": df.to_dict(orient="records"),
+
+            "result_text": df.to_markdown(index=False) if not df.empty else "No statistics available.",
 
             "error": None
 
@@ -80,7 +91,11 @@ def generate_and_execute_sql(
 
             "generated_sql": sql,
 
-            "result": [],
+            "result_df": None,
+
+            "result_json": [],
+
+            "result_text": "No statistics available.",
 
             "error": str(e)
 

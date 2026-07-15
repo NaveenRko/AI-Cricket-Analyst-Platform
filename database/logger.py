@@ -1,5 +1,6 @@
 from database.supabase_client import supabase
 
+
 def save_query(data):
 
     response = (
@@ -11,8 +12,6 @@ def save_query(data):
 
     return response.data[0]["id"]
 
-import pandas as pd
-
 
 def save_sql_log(
 
@@ -23,13 +22,8 @@ def save_sql_log(
     sql_result,
 
     error
+
 ):
-
-    if isinstance(sql_result, pd.DataFrame):
-
-        sql_result = sql_result.to_dict(
-            orient="records"
-        )
 
     (
         supabase
