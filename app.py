@@ -121,7 +121,7 @@ if st.button("Analyze"):
                         rewritten_question,
                         get_batting_result
                     )
-                
+                    
                     final_answer = result["answer"]
                 
                     retrieved_docs = result["rag_docs"]
