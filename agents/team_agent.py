@@ -1,24 +1,15 @@
-from langchain_community.utilities import SQLDatabase
-from langchain_community.agent_toolkits.sql.base import create_sql_agent
+from agents.sql_generator import generate_and_execute_sql
 
-from agents.prompts import TEAM_PROMPT
+from agents.schemas.team_schema import SCHEMA
 
-def get_team_agent(llm):
 
-    db = SQLDatabase.from_uri(
-        "duckdb:///database/ipl.duckdb",
+def get_team_result(
+    llm,
+    question
+):
 
-        include_tables=[
-            "team_match_stats",
-            "team_season_stats",
-            "matches"
-        ]
-    )
-
-    return create_sql_agent(
+    return generate_and_execute_sql(
         llm=llm,
-        db=db,
-        verbose=True,
-        agent_type="tool-calling",
-        prefix=TEAM_PROMPT
+        question=question,
+        schema=SCHEMA
     )

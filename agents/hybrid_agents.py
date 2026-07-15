@@ -4,41 +4,75 @@ from agents.rag_agent import get_rag_answer
 def get_hybrid_answer(
     llm,
     question,
-    sql_agent
+    sql_result_function
 ):
+    """
+    sql_result_function:
+        get_batting_result
+        get_bowling_result
+        get_team_result
+        get_season_result
+        get_venue_result
+        get_matchup_result
+    """
 
-    # -------------------------
+    # ----------------------------------------
     # SQL
-    # -------------------------
+    # ----------------------------------------
 
-    try:
-
-        sql_response = sql_agent.invoke(
-            {"input": question}
-        )
-
-        sql_answer = sql_response["output"]
-
-    except Exception:
-
-        sql_answer = "No SQL statistics available."
-
-    # -------------------------
-    # RAG
-    # -------------------------
-
-    rag = get_rag_answer(
+    sql_result = sql_result_function(
         llm,
         question
     )
 
-    rag_answer = rag["answer"]
+    sql_answer = sql_result["result"]
 
-    rag_docs = rag["rag_docs"]
+    # ----------------------------------------
+    # Decide if RAG is needed
+    # ----------------------------------------
 
-    # -------------------------
-    # FINAL PROMPT
-    # -------------------------
+    use_rag = False
+
+    if isinstance(sql_answer, str):
+
+        lower = sql_answer.lower()
+
+        if (
+            "no statistics" in lower
+            or "not available" in lower
+            or "no rows" in lower
+        ):
+            use_rag = True
+
+    rag_answer = ""
+
+    rag_docs = []
+
+    if use_rag:
+
+        rag = get_rag_answer(
+            llm,
+            question
+        )
+
+        rag_answer = rag["answer"]
+
+        rag_docs = rag["rag_docs"]
+
+    # ----------------------------------------
+    # SQL only
+    # ----------------------------------------
+
+    if not use_rag:
+
+        return {
+            "answer": sql_answer,
+            "rag_docs": []
+        }
+
+    # ----------------------------------------
+    # Hybrid Answer
+    # ----------------------------------------
 
     prompt = f"""
 You are a senior IPL analyst.
@@ -46,53 +80,27 @@ You are a senior IPL analyst.
 Question:
 {question}
 
-SQL Statistics:
+SQL Result:
 {sql_answer}
 
 Knowledge:
 {rag_answer}
 
-Create ONE final answer.
+Rules
 
-Rules:
+1. SQL is the primary source.
 
-1. SQL statistics are primary.
+2. Use RAG only if SQL lacks statistics.
 
-2. If SQL has useful statistics,
-use them first.
+3. Never invent statistics.
 
-3. If SQL has no statistics,
-ignore it completely.
+4. Never mention SQL.
 
-4. Use RAG only for:
+5. Never mention RAG.
 
-- player history
-- IPL history
-- achievements
-- context
+6. Write naturally.
 
-5. Never remove:
-
-- numbers
-- rankings
-- player names
-
-6. Never invent statistics.
-
-7. If SQL and RAG disagree,
-trust SQL.
-
-8. Explain why the statistics are significant ONLY if supported by the SQL values.
-
-9. Avoid repetition.
-
-10. Do not mention SQL or database.
-
-11. Compare with other players only when SQL contains comparable statistics.
-
-12. Write like an IPL analyst from Cricbuzz or ESPN Cricinfo while remaining factual.
-
-13. If both contain no answer,
+7. If both have no answer,
 say:
 
 Information not available.

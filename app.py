@@ -14,12 +14,13 @@ from langchain_groq import ChatGroq
 # replace with supervisor agent with classifier
 from IntentClassifier.predict_intent import predict_intent
 
-from agents.batting_agent import get_batting_agent
-from agents.bowling_agent import get_bowling_agent
-from agents.venue_agent import get_venue_agent
-from agents.matchup_agent import get_matchup_agent
-from agents.team_agent import get_team_agent
-from agents.season_agent import get_season_agent
+from agents.batting_agent import get_batting_result
+from agents.bowling_agent import get_bowling_result
+from agents.team_agent import get_team_result
+from agents.season_agent import get_season_result
+from agents.venue_agent import get_venue_result
+from agents.matchup_agent import get_matchup_result
+
 from agents.rag_agent import get_rag_answer 
 from agents.hybrid_agents import get_hybrid_answer
 
@@ -70,18 +71,6 @@ llm = ChatGroq(
 )
 
 # ==================================
-# LOAD AGENTS
-# ==================================
-
-batting_agent = get_batting_agent(llm)
-bowling_agent = get_bowling_agent(llm)
-venue_agent = get_venue_agent(llm)
-matchup_agent = get_matchup_agent(llm)
-team_agent = get_team_agent(llm)
-season_agent = get_season_agent(llm)
-
-
-# ==================================
 # USER INPUT
 # ==================================
 
@@ -130,7 +119,7 @@ if st.button("Analyze"):
                     result = get_hybrid_answer(
                         llm,
                         rewritten_question,
-                        batting_agent
+                        get_batting_result
                     )
                 
                     final_answer = result["answer"]
@@ -143,7 +132,7 @@ if st.button("Analyze"):
                     result = get_hybrid_answer(
                         llm,
                         rewritten_question,
-                        bowling_agent
+                        get_bowling_result
                     )
                 
                     final_answer = result["answer"]
@@ -156,7 +145,7 @@ if st.button("Analyze"):
                     result = get_hybrid_answer(
                         llm,
                         rewritten_question,
-                        venue_agent
+                        get_venue_result
                     )
                 
                     final_answer = result["answer"]
@@ -169,7 +158,7 @@ if st.button("Analyze"):
                     result = get_hybrid_answer(
                         llm,
                         rewritten_question,
-                        matchup_agent
+                        get_matchup_result
                     )
                 
                     final_answer = result["answer"]
@@ -182,7 +171,7 @@ if st.button("Analyze"):
                     result = get_hybrid_answer(
                         llm,
                         rewritten_question,
-                        team_agent
+                        get_team_result
                     )
                 
                     final_answer = result["answer"]
@@ -195,7 +184,7 @@ if st.button("Analyze"):
                     result = get_hybrid_answer(
                         llm,
                         rewritten_question,
-                        season_agent
+                        get_season_result
                     )
                 
                     final_answer = result["answer"]
