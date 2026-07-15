@@ -70,5 +70,13 @@ def get_rag_answer(llm, question):
 
     return {
         "answer": response.content,
-        "rag_docs": rag_sources
+
+        "generated_sql": None,
+    
+        "sql_result": None,
+    
+        "sql_error": None,
+    
+        "rag_docs": retrieved_docs
+    
     }
