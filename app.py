@@ -274,7 +274,7 @@ if st.button("Analyze"):
                 
                     sql_result=result["sql_result"],
                 
-                    error=result["sql_error"]
+                    error=result.get("sql_error")
                 
                 )
 
