@@ -138,6 +138,12 @@ Never DROP.
 
 Join tables whenever required.
 
+Players table contains the official player names.
+
+Statistics tables contain abbreviated names.
+
+Always JOIN players table to resolve names.
+
 If season is mentioned,
 join matches using match_id.
 
