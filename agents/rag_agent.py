@@ -50,8 +50,9 @@ def get_rag_answer(llm, question):
     )
 
     rag_sources = [
-        doc.metadata.get("source", "")
+        doc.metadata.get("source")
         for doc in docs
+        if doc.metadata.get("source")
     ]
 
     prompt = PromptTemplate(
@@ -77,6 +78,5 @@ def get_rag_answer(llm, question):
     
         "sql_error": None,
     
-        "rag_docs": retrieved_docs
-    
+        "rag_docs": rag_sources
     }
