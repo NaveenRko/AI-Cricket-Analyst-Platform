@@ -94,12 +94,23 @@ if st.button("Analyze"):
                 # Retrive history (Memory)
                 history = memory.load_memory_variables({})
 
-                rewritten_question = rewrite_question(
-                    llm,
-                    history,
-                    question
+                needs_rewrite = any(
+                    word in question.lower()
+                    for word in ["he","his","him","she",
+                        "her","they","them","that player",
+                        "that team","same season","previous"
+                    ]
                 )
                 
+                if needs_rewrite:
+                    rewritten_question = rewrite_question(
+                        llm,
+                        history,
+                        question
+                    )
+                else:
+                    rewritten_question = question
+                                
                 # ---------------------
                 # ROUTE QUERY
                 # ---------------------
