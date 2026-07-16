@@ -144,6 +144,8 @@ Statistics tables contain abbreviated names.
 
 Always JOIN players table to resolve names.
 
+Ex :- "Virat Kohli" - "V Kohli"
+
 If season is mentioned,
 join matches using match_id.
 
