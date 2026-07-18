@@ -329,13 +329,7 @@ if st.button("Analyze"):
                 
                     pipeline=result.get("search_used"),
                 
-                    status="success" 
-                    if result.get("sql_error"):
-                        status = "failed"
-                    if final_answer.startswith("Information not available"):
-                        status = "partial"                 
-                    if final_answer.startswith("I am an IPL specialist"):                  
-                        status = "out_of_scope",
+                    status="success" if final_answer else "failed",
                 
                     sql_used=result.get("generated_sql") is not None,
                 
