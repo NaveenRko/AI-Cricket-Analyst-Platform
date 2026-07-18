@@ -22,7 +22,8 @@ from agents.venue_agent import get_venue_result
 from agents.matchup_agent import get_matchup_result
 
 from agents.rag_agent import get_rag_answer 
-from agents.hybrid_agents import get_hybrid_answer
+#from agents.hybrid_agents import get_hybrid_answer
+from agents.rag_hybrid import get_rag_hybrid_answer
 
 from memory.memory import memory
 from memory.memory_agent import rewrite_question
@@ -208,17 +209,18 @@ if st.button("Analyze"):
                 
                 
                 elif agent_type == "rag":
-                    result = get_hybrid_answer(
+
+                    result = get_rag_hybrid_answer(
+                
                         llm,
-                        question,
-                        sql_result_function
+                
+                        rewritten_question
+                
                     )
                 
                     final_answer = result["answer"]
                 
-                    retrieved_docs = result["rag_docs"]
-                
-                
+                    retrieved_docs = result["rag_docs"]        
                 else:
                 
                     final_answer = (
