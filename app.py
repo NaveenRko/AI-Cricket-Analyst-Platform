@@ -22,7 +22,7 @@ from agents.venue_agent import get_venue_result
 from agents.matchup_agent import get_matchup_result
 
 from agents.rag_agent import get_rag_answer 
-#from agents.hybrid_agents import get_hybrid_answer
+from agents.hybrid_agents import get_hybrid_answer
 from agents.rag_hybrid import get_rag_hybrid_answer
 
 from memory.memory import memory
