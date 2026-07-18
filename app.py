@@ -211,7 +211,7 @@ if st.button("Analyze"):
                     result = get_hybrid_answer(
                         llm,
                         question,
-                        get_rag_result
+                        sql_result_function
                     )
                 
                     final_answer = result["answer"]
