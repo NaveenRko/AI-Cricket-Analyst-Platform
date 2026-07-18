@@ -73,3 +73,55 @@ def save_tavily_log(
         })
         .execute()
     )
+
+def save_evaluation_log(
+
+    query_log_id,
+
+    pipeline,
+
+    status,
+
+    sql_used,
+
+    rag_used,
+
+    tavily_used,
+
+    generated_sql,
+
+    llm_calls,
+
+    response_time,
+
+    intent,
+
+    confidence=None
+
+):
+
+    supabase.table("evaluation_logs").insert({
+
+        "query_log_id": query_log_id,
+
+        "pipeline": pipeline,
+
+        "status": status,
+
+        "sql_used": sql_used,
+
+        "rag_used": rag_used,
+
+        "tavily_used": tavily_used,
+
+        "generated_sql": generated_sql,
+
+        "llm_calls": llm_calls,
+
+        "response_time": response_time,
+
+        "intent": intent,
+
+        "confidence": confidence
+
+    }).execute()

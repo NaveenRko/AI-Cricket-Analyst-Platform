@@ -278,6 +278,7 @@ if st.button("Analyze"):
                     save_sql_log,
                     save_tavily_log
                 )
+                from database.logger import save_evaluation_log
                 
                 query_log_id = save_query({
                 
@@ -321,6 +322,36 @@ if st.button("Analyze"):
                 
                     tavily_sources=result.get("tavily_sources", [])
                 
+                )
+                save_evaluation_log(
+
+                    query_log_id=query_log_id,
+                
+                    pipeline=result.get("search_used"),
+                
+                    status="success" 
+                    if result.get("sql_error"):
+                        status = "failed"
+                    if final_answer.startswith("Information not available"):
+                        status = "partial"                 
+                    if final_answer.startswith("I am an IPL specialist"):                  
+                        status = "out_of_scope",
+                
+                    sql_used=result.get("generated_sql") is not None,
+                
+                    rag_used=len(result.get("rag_docs", [])) > 0,
+                
+                    tavily_used=result.get("search_used") == "tavily",
+                
+                    generated_sql=result.get("generated_sql") is not None,
+                
+                    llm_calls=result.get("llm_calls", 2),
+                
+                    response_time=response_time,
+                
+                    intent=agent_type,
+                
+                    confidence=None
                 )
             except Exception as e:
             
