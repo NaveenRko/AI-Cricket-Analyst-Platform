@@ -297,9 +297,9 @@ if st.button("Analyze"):
 
                     query_log_id=query_log_id,
                 
-                    search_used=result["search_used"],
+                    search_used=result.get("search_used"),
                 
-                    tavily_sources=result["tavily_sources"]
+                    tavily_sources=result.get("tavily_sources", [])
                 
                 )
 
