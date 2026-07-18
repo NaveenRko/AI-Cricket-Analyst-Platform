@@ -25,6 +25,10 @@ def save_sql_log(
 
 ):
 
+    # SQL Agent wasn't used
+    if generated_sql is None:
+        return
+
     (
         supabase
         .table("sql_logs")
@@ -37,6 +41,34 @@ def save_sql_log(
             "sql_result": sql_result,
 
             "error": error
+
+        })
+        .execute()
+    )
+
+def save_tavily_log(
+
+    query_log_id,
+
+    search_used,
+
+    tavily_sources
+
+):
+
+    if search_used != "tavily":
+        return
+
+    (
+        supabase
+        .table("tavily_logs")
+        .insert({
+
+            "query_log_id": query_log_id,
+
+            "search_used": search_used,
+
+            "tavily_sources": tavily_sources
 
         })
         .execute()

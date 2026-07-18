@@ -24,7 +24,6 @@ Columns:
 - overs
 - runs_conceded
 - economy
-- strike_rate
 
 ----------------------------------
 
@@ -36,6 +35,7 @@ Columns:
 - wickets
 - runs_conceded
 - overs
+- economy
 
 ----------------------------------
 
@@ -45,7 +45,9 @@ Columns:
 - season
 - bowler
 - matches
+- runs_concided
 - wickets
+- overs
 - economy
 - strike_rate
 
@@ -66,24 +68,37 @@ Columns:
 Table: matches
 
 Columns:
-- match_id
-- season
-- venue
-- winner
-- player_of_match
+
+match_id
+season
+date
+venue
+city
+winner
+toss_winner
+toss_decision
+player_of_match
 
 ----------------------------------
 
 Table: deliveries
 
 Columns:
-- match_id
-- over
-- ball
-- bowler
-- batter
-- total_runs
-- is_wicket
+
+match_id
+innings
+over
+ball
+batter
+bowler
+batsman_runs
+extra_runs
+total_runs
+is_wicket
+player_dismissed
+dismissal_kind
+fielder
+is_powerplay (1-yes, 0 - no)
 
 Rules
 

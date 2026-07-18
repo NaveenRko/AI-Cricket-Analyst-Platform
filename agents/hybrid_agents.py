@@ -1,4 +1,5 @@
 from agents.rag_agent import get_rag_answer
+from agents.tavily_agent import tavily_search
 
 
 def get_hybrid_answer(
@@ -25,43 +26,10 @@ def get_hybrid_answer(
     sql_json = sql_result["result_json"]
 
     # ----------------------------------------
-    # Decide whether RAG is needed
+    # SQL Found
     # ----------------------------------------
 
-    use_rag = False
-
-    if sql_df is None:
-
-        use_rag = True
-
-    elif sql_df.empty:
-
-        use_rag = True
-
-    rag_answer = ""
-
-    rag_docs = []
-
-    # ----------------------------------------
-    # RAG
-    # ----------------------------------------
-
-    if use_rag:
-
-        rag = get_rag_answer(
-            llm,
-            question
-        )
-
-        rag_answer = rag["answer"]
-
-        rag_docs = rag["rag_docs"]
-
-    # ----------------------------------------
-    # SQL only
-    # ----------------------------------------
-
-    if not use_rag:
+    if sql_df is not None and not sql_df.empty:
 
         return {
 
@@ -71,13 +39,62 @@ def get_hybrid_answer(
 
             "sql_result": sql_json,
 
-            "rag_docs": []
+            "sql_error": sql_result["error"],
+
+            "rag_docs": [],
+
+            "tavily_sources": [],
+
+            "search_used": "sql"
 
         }
 
     # ----------------------------------------
-    # Hybrid Answer
+    # FAISS RAG
     # ----------------------------------------
+
+    rag = get_rag_answer(
+        llm,
+        question
+    )
+
+    rag_answer = rag["answer"]
+
+    rag_docs = rag["rag_docs"]
+
+    # ----------------------------------------
+    # FAISS has useful answer
+    # ----------------------------------------
+
+    if (
+        rag_answer
+        and
+        "information not available" not in rag_answer.lower()
+    ):
+
+        return {
+
+            "answer": rag_answer,
+
+            "generated_sql": generated_sql,
+
+            "sql_result": sql_json,
+
+            "sql_error": sql_result["error"],
+
+            "rag_docs": rag_docs,
+
+            "tavily_sources": [],
+
+            "search_used": "rag"
+
+        }
+
+    # ----------------------------------------
+    # Tavily Search
+    # ----------------------------------------
+
+    tavily = tavily_search(question)
 
     prompt = f"""
 You are a senior IPL analyst.
@@ -85,31 +102,27 @@ You are a senior IPL analyst.
 Question:
 {question}
 
-SQL Statistics:
-{sql_answer}
+Web Search Results:
 
-Knowledge Base:
-{rag_answer}
+{tavily["context"]}
 
-Rules:
+Rules
 
-1. SQL is the primary source.
+1. Use only the web search results.
 
-2. Use RAG only when SQL contains no statistics.
+2. Never invent facts.
 
-3. Never invent statistics.
+3. Write naturally.
 
-4. Never mention SQL or databases.
+4. Never mention Tavily.
 
-5. Never mention RAG or knowledge base.
+5. Never mention web search.
 
-6. Keep the answer concise and natural.
-
-7. If both SQL and RAG contain no information, reply:
+6. If information is unavailable say:
 
 Information not available.
 
-Final Answer:
+Answer:
 """
 
     response = llm.invoke(prompt)
@@ -117,13 +130,17 @@ Final Answer:
     return {
 
         "answer": response.content,
-    
+
         "generated_sql": generated_sql,
-    
+
         "sql_result": sql_json,
-    
+
         "sql_error": sql_result["error"],
-    
-        "rag_docs": rag_docs
-    
+
+        "rag_docs": rag_docs,
+
+        "tavily_sources": tavily["sources"],
+
+        "search_used": "tavily"
+
     }

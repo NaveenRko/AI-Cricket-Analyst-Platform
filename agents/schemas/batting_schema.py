@@ -37,6 +37,9 @@ match_id
 batter
 runs
 balls
+fours
+sixes
+strike_rate
 
 ---------------------------------------
 
@@ -49,8 +52,13 @@ batter
 matches
 runs
 balls
-average
+dismissals
+fifties
+hundreds
+fours
+sixes
 strike_rate
+average
 
 ---------------------------------------
 
@@ -60,9 +68,9 @@ Columns:
 
 batter
 phase
-runs_batter
-ball_no
-sr
+runs
+balls
+strike_rate
 
 ---------------------------------------
 
@@ -71,10 +79,10 @@ Table: player_milestones
 Columns:
 
 batter
-highest_score
 fifties
 hundreds
 ducks
+player_of_match_awards
 
 ---------------------------------------
 
@@ -82,11 +90,9 @@ Table: players
 
 Columns:
 
-player
-batting_style
-bowling_style
-role
-country
+player_name
+player_id
+alias_name
 
 ---------------------------------------
 
@@ -98,7 +104,10 @@ match_id
 season
 date
 venue
+city
 winner
+toss_winner
+toss_decision
 player_of_match
 
 ---------------------------------------
@@ -117,6 +126,10 @@ batsman_runs
 extra_runs
 total_runs
 is_wicket
+player_dismissed
+dismissal_kind
+fielder
+is_powerplay (1-yes, 0 - no)
 
 ---------------------------------------
 
@@ -138,13 +151,13 @@ Never DROP.
 
 Join tables whenever required.
 
-Players table contains the official player names.
+Players table contains the official player names and alias names.
 
 Statistics tables contain abbreviated names.
 
-Always JOIN players table to resolve names.
-
 Ex :- "Virat Kohli" - "V Kohli"
+
+Always JOIN players table to resolve names.
 
 If season is mentioned,
 join matches using match_id.

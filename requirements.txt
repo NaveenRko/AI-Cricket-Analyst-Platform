@@ -35,3 +35,7 @@ plotly
 supabase
 
 tabulate
+
+tavily-python
+
+conda run pip freeze

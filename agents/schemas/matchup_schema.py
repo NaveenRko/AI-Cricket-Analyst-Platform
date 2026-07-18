@@ -20,9 +20,9 @@ Table: player_vs_player
 Columns:
 - batter
 - bowler
-- runs_batter
-- ball_no
-- is_wicket
+- runs
+- balls
+- wickets
 - strike_rate
 
 Description:
@@ -53,11 +53,16 @@ Ball-by-ball IPL deliveries.
 Table: matches
 
 Columns:
-- match_id
-- season
-- venue
-- winner
-- player_of_match
+
+match_id
+season
+date
+venue
+city
+winner
+toss_winner
+toss_decision
+player_of_match
 
 --------------------------------------------------
 

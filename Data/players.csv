@@ -1,817 +1,886 @@
-player_name,player_id
-A Ashish Reddy,1
-A Badoni,2
-A Chandila,3
-A Chopra,4
-A Choudhary,5
-A Dananjaya,6
-A Flintoff,7
-A Kamboj,8
-A Kumble,9
-A Manohar,10
-A Mhatre,11
-A Mishra,12
-A Mithun,13
-A Mukund,14
-A Nehra,15
-A Nel,16
-A Nortje,17
-A Raghuvanshi,18
-A Singh,19
-A Symonds,20
-A Tomar,21
-A Uniyal,22
-A Zampa,23
-AA Bilakhia,24
-AA Chavan,25
-AA Jhunjhunwala,26
-AA Kazi,27
-AA Kulkarni,28
-AA Noffke,29
-AB Agarkar,30
-AB Barath,31
-AB Dinda,32
-AB McDonald,33
-AB de Villiers,34
-AC Blizzard,35
-AC Gilchrist,36
-AC Thomas,37
-AC Voges,38
-AD Hales,39
-AD Mascarenhas,40
-AD Mathews,41
-AD Nath,42
-AD Russell,43
-AF Milne,44
-AG Murtaza,45
-AG Paunikar,46
-AJ Finch,47
-AJ Hosein,48
-AJ Turner,49
-AJ Tye,50
-AK Markram,51
-AL Menaria,52
-AM Ghazanfar,53
-AM Nayar,54
-AM Rahane,55
-AM Salvi,56
-AN Ahmed,57
-AN Ghosh,58
-AP Dole,59
-AP Majumdar,60
-AP Tare,61
-AR Bawne,62
-AR Patel,63
-AS Joseph,64
-AS Rajpoot,65
-AS Raut,66
-AS Roy,67
-AS Yadav,68
-AT Carey,69
-AT Rayudu,70
-AU Rashid,71
-AUK Pathan,72
-AV Wankhade,73
-Abdul Basith,74
-Abdul Samad,75
-Abdur Razzak,76
-Abhinandan Singh,77
-Abhishek Sharma,78
-Abishek Porel,79
-Akash Deep,80
-Akash Madhwal,81
-Akash Singh,82
-Akshat Raghuwanshi,83
-Aman Hakim Khan,84
-Anand Rajan,85
-Aniket Verma,86
-Anirudh Singh,87
-Ankit Sharma,88
-Ankit Soni,89
-Anmolpreet Singh,90
-Anuj Rawat,91
-Anureet Singh,92
-Arjun Tendulkar,93
-Arshad Khan,94
-Arshad Khan (2),95
-Arshdeep Singh,96
-Ashok Sharma,97
-Ashutosh Sharma,98
-Ashwani Kumar,99
-Atharva Taide,100
-Auqib Nabi,101
-Avesh Khan,102
-Azhar Mahmood,103
-Azmatullah Omarzai,104
-B Akhil,105
-B Aparajith,106
-B Chipli,107
-B Geeves,108
-B Indrajith,109
-B Kumar,110
-B Laughlin,111
-B Lee,112
-B Muzarabani,113
-B Sai Sudharsan,114
-B Stanlake,115
-B Sumanth,116
-BA Bhatt,117
-BA Stokes,118
-BAW Mendis,119
-BB McCullum,120
-BB Samantray,121
-BB Sran,122
-BCJ Cutting,123
-BE Hendricks,124
-BJ Dwarshuis,125
-BJ Haddin,126
-BJ Hodge,127
-BJ Rohrer,128
-BKG Mendis,129
-BMAJ Mendis,130
-BR Dunk,131
-BR Sharath,132
-BW Hilfenhaus,133
-Basil Thampi,134
-Bipul Sharma,135
-Brijesh Sharma,136
-C Bosch,137
-C Connolly,138
-C Ganapathy,139
-C Green,140
-C Madan,141
-C Munro,142
-C Nanda,143
-C Sakariya,144
-C de Grandhomme,145
-CA Ingram,146
-CA Lynn,147
-CA Pujara,148
-CH Gayle,149
-CH Morris,150
-CJ Anderson,151
-CJ Dala,152
-CJ Ferguson,153
-CJ Green,154
-CJ Jordan,155
-CJ McKay,156
-CK Kapugedera,157
-CK Langeveldt,158
-CL White,159
-CM Gautam,160
-CR Brathwaite,161
-CR Woakes,162
-CRD Fernando,163
-CV Varun,164
-D Brevis,165
-D Ferreira,166
-D Jansen,167
-D Kalyankrishna,168
-D Madushanka,169
-D Padikkal,170
-D Pretorius,171
-D Salunkhe,172
-D Wiese,173
-D du Preez,174
-DA Miller,175
-DA Payne,176
-DA Warner,177
-DAJ Bracewell,178
-DB Das,179
-DB Ravi Teja,180
-DE Bollinger,181
-DG Nalkande,182
-DH Yagnik,183
-DJ Bravo,184
-DJ Harris,185
-DJ Hooda,186
-DJ Hussey,187
-DJ Jacobs,188
-DJ Malan,189
-DJ Mitchell,190
-DJ Muthuswami,191
-DJ Thornely,192
-DJ Willey,193
-DJG Sammy,194
-DJM Short,195
-DL Chahar,196
-DL Vettori,197
-DM Bravo,198
-DNT Zoysa,199
-DP Conway,200
-DP Nannes,201
-DP Vijaykumar,202
-DPMD Jayawardene,203
-DR Martyn,204
-DR Sams,205
-DR Shorey,206
-DR Smith,207
-DS Kulkarni,208
-DS Lehmann,209
-DS Rathi,210
-DT Christian,211
-DT Patil,212
-DV Malewar,213
-DW Steyn,214
-Dhruv Jurel,215
-E Lewis,216
-E Malinga,217
-EJG Morgan,218
-ER Dwivedi,219
-F Behardien,220
-F du Plessis,221
-FA Allen,222
-FH Allen,223
-FH Edwards,224
-FY Fazal,225
-Fazalhaq Farooqi,226
-G Coetzee,227
-G Gambhir,228
-GB Hogg,229
-GC Smith,230
-GC Viljoen,231
-GD McGrath,232
-GD Phillips,233
-GF Linde,234
-GH Vihari,235
-GHS Garton,236
-GJ Bailey,237
-GJ Maxwell,238
-GR Napier,239
-GS Sandhu,240
-Gagandeep Singh,241
-Gulbadin Naib,242
-Gurjapneet Singh,243
-Gurkeerat Singh,244
-Gurnoor Brar,245
-H Das,246
-H Klaasen,247
-H Sharma,248
-HC Brook,249
-HE van der Dussen,250
-HF Gurney,251
-HH Gibbs,252
-HH Pandya,253
-HM Amla,254
-HR Shokeen,255
-HV Patel,256
-Harbhajan Singh,257
-Harmeet Singh,258
-Harpreet Brar,259
-Harpreet Singh,260
-Harsh Dubey,261
-Harshit Rana,262
-Himmat Singh,263
-I Malhotra,264
-I Sharma,265
-I Udana,266
-IC Pandey,267
-IC Porel,268
-IK Pathan,269
-IR Jaggi,270
-IS Sodhi,271
-Imran Tahir,272
-Iqbal Abdulla,273
-Ishan Kishan,274
-J Arunkumar,275
-J Botha,276
-J Fraser-McGurk,277
-J Little,278
-J Overton,279
-J Suchith,280
-J Syed Mohammad,281
-J Theron,282
-J Yadav,283
-JA Duffy,284
-JA Morkel,285
-JA Richardson,286
-JC Archer,287
-JC Buttler,288
-JD Ryder,289
-JD Unadkat,290
-JDP Oram,291
-JDS Neesham,292
-JE Root,293
-JE Taylor,294
-JEC Franklin,295
-JG Bethell,296
-JH Kallis,297
-JJ Bumrah,298
-JJ Roy,299
-JJ van der Wath,300
-JL Denly,301
-JL Pattinson,302
-JM Bairstow,303
-JM Cox,304
-JM Kemp,305
-JM Sharma,306
-JO Holder,307
-JP Behrendorff,308
-JP Duminy,309
-JP Faulkner,310
-JP Inglis,311
-JPR Scantlebury-Searles,312
-JR Hazlewood,313
-JR Hopes,314
-JR Philippe,315
-JW Hastings,316
-Jalaj S Saxena,317
-Jaskaran Singh,318
-Joginder Sharma,319
-K Goel,320
-K Gowtham,321
-K Kartikeya,322
-K Khejroliya,323
-K Rabada,324
-K Santokie,325
-K Upadhyay,326
-K Yadav,327
-KA Jamieson,328
-KA Maharaj,329
-KA Pollard,330
-KAJ Roach,331
-KB Arun Karthik,332
-KC Cariappa,333
-KC Sangakkara,334
-KD Karthik,335
-KH Devdhar,336
-KH Pandya,337
-KJ Abbott,338
-KK Ahmed,339
-KK Cooper,340
-KK Nair,341
-KL Nagarkoti,342
-KL Rahul,343
-KM Asif,344
-KM Jadhav,345
-KMA Paul,346
-KMDN Kulasekara,347
-KP Appanna,348
-KP Pietersen,349
-KR Mayers,350
-KR Sen,351
-KS Bharat,352
-KS Rathore,353
-KS Sharma,354
-KS Williamson,355
-KT Maphaka,356
-KV Sharma,357
-KW Richardson,358
-Kamran Akmal,359
-Kamran Khan,360
-Karanveer Singh,361
-Karim Janat,362
-Kartik Sharma,363
-Kartik Tyagi,364
-Krish Bhagat,365
-Kuldeep Yadav,366
-Kumar Kushagra,367
-L Ablish,368
-L Balaji,369
-L Ngidi,370
-L Ronchi,371
-L Wood,372
-LA Carseldine,373
-LA Pomersbach,374
-LB Williams,375
-LE Plunkett,376
-LG Pretorius,377
-LH Ferguson,378
-LI Meriwala,379
-LJ Wright,380
-LMP Simmons,381
-LPC Silva,382
-LR Shukla,383
-LRPL Taylor,384
-LS Livingstone,385
-Lalit Yadav,386
-Liton Das,387
-M Ashwin,388
-M Jansen,389
-M Kaif,390
-M Kartik,391
-M Klinger,392
-M Manhas,393
-M Markande,394
-M Morkel,395
-M Muralitharan,396
-M Ntini,397
-M Pathirana,398
-M Prasidh Krishna,399
-M Rawat,400
-M Shahrukh Khan,401
-M Siddharth,402
-M Theekshana,403
-M Tiwari,404
-M Vijay,405
-M Vohra,406
-M de Lange,407
-MA Agarwal,408
-MA Khote,409
-MA Starc,410
-MA Wood,411
-MB Parmar,412
-MC Henriques,413
-MC Juneja,414
-MD Choudhary,415
-MD Mishra,416
-MD Shanaka,417
-MDKJ Perera,418
-MEK Hussey,419
-MF Maharoof,420
-MG Bracewell,421
-MG Johnson,422
-MG Neser,423
-MJ Clarke,424
-MJ Guptill,425
-MJ Henry,426
-MJ Lumb,427
-MJ McClenaghan,428
-MJ Owen,429
-MJ Santner,430
-MJ Suthar,431
-MK Lomror,432
-MK Pandey,433
-MK Tiwary,434
-ML Hayden,435
-MM Ali,436
-MM Patel,437
-MM Sharma,438
-MN Samuels,439
-MN van Wyk,440
-MP Breetzke,441
-MP Stoinis,442
-MP Yadav,443
-MR Marsh,444
-MS Bhandage,445
-MS Bisla,446
-MS Dhoni,447
-MS Gony,448
-MS Wade,449
-MV Boucher,450
-MW Short,451
-Mandeep Singh,452
-Mashrafe Mortaza,453
-Mayank Dagar,454
-Mayank Rawat,455
-Milind Kumar,456
-Misbah-ul-Haq,457
-Mohammad Ashraful,458
-Mohammad Asif,459
-Mohammad Hafeez,460
-Mohammad Nabi,461
-Mohammed Shami,462
-Mohammed Siraj,463
-Mohit Rathee,464
-Mohsin Khan,465
-Monu Kumar,466
-Mujeeb Ur Rahman,467
-Mukesh Choudhary,468
-Mukesh Kumar,469
-Musheer Khan,470
-Mustafizur Rahman,471
-N Burger,472
-N Jagadeesan,473
-N Pooran,474
-N Rana,475
-N Saini,476
-N Sindhu,477
-N Thushara,478
-N Wadhera,479
-NA Saini,480
-NB Singh,481
-ND Doshi,482
-NJ Maddinson,483
-NJ Rimmington,484
-NK Patel,485
-NL McCullum,486
-NLTC Perera,487
-NM Coulter-Nile,488
-NS Naik,489
-NT Ellis,490
-NV Ojha,491
-Naman Dhir,492
-Navdeep Saini,493
-Naveen-ul-Haq,494
-Nithish Kumar Reddy,495
-Noor Ahmad,496
-O Thomas,497
-OA Shah,498
-OC McCoy,499
-OF Smith,500
-P Amarnath,501
-P Awana,502
-P Chopra,503
-P Dogra,504
-P Dubey,505
-P Kumar,506
-P Negi,507
-P Nissanka,508
-P Parameswaran,509
-P Prasanth,510
-P Ray Barman,511
-P Sahu,512
-P Simran Singh,513
-P Suyal,514
-PA Patel,515
-PA Reddy,516
-PBB Rajapaksa,517
-PC Valthaty,518
-PD Collingwood,519
-PD Salt,520
-PH Solanki,521
-PHKD Mendis,522
-PJ Cummins,523
-PJ Sangwan,524
-PK Garg,525
-PM Sarvesh Kumar,526
-PN Mankad,527
-PP Chawla,528
-PP Hinge,529
-PP Ojha,530
-PP Shaw,531
-PR Shah,532
-PR Veer,533
-PSP Handscomb,534
-PV Tambe,535
-PVD Chameera,536
-PVSN Raju,537
-PWA Mulder,538
-PWH de Silva,539
-Pankaj Singh,540
-Parvez Rasool,541
-Prince Yadav,542
-Priyansh Arya,543
-Q de Kock,544
-R Ashwin,545
-R Bhatia,546
-R Bishnoi,547
-R Dhawan,548
-R Dravid,549
-R Goyal,550
-R McLaren,551
-R Minz,552
-R Ninan,553
-R Parag,554
-R Powell,555
-R Rampaul,556
-R Ravindra,557
-R Sai Kishore,558
-R Sanjay Yadav,559
-R Sathish,560
-R Sharma,561
-R Shepherd,562
-R Shukla,563
-R Smaran,564
-R Tewatia,565
-R Vinay Kumar,566
-RA Bawa,567
-RA Jadeja,568
-RA Shaikh,569
-RA Tripathi,570
-RD Chahar,571
-RD Gaikwad,572
-RD Rickelton,573
-RE Levi,574
-RE van der Merwe,575
-RG More,576
-RG Sharma,577
-RJ Gleeson,578
-RJ Harris,579
-RJ Peterson,580
-RJ Quiney,581
-RJW Topley,582
-RK Bhui,583
-RK Singh,584
-RM Patidar,585
-RN ten Doeschate,586
-RP Meredith,587
-RP Singh,588
-RR Bhatkal,589
-RR Bose,590
-RR Pant,591
-RR Powar,592
-RR Raje,593
-RR Rossouw,594
-RR Sarwan,595
-RS Bopara,596
-RS Gavaskar,597
-RS Ghosh,598
-RS Hangargekar,599
-RS Sodhi,600
-RT Ponting,601
-RV Gomez,602
-RV Patel,603
-RV Uthappa,604
-RW Price,605
-Raghu Sharma,606
-Rahmanullah Gurbaz,607
-Ramandeep Singh,608
-Rashid Khan,609
-Rasikh Salam,610
-Ravi Bishnoi,611
-Ravi Singh,612
-S Anirudha,613
-S Aravind,614
-S Arora,615
-S Badree,616
-S Badrinath,617
-S Chanderpaul,618
-S Dhawan,619
-S Dube,620
-S Gopal,621
-S Joseph,622
-S Kaul,623
-S Kaushik,624
-S Ladda,625
-S Lamichhane,626
-S Midhun,627
-S Nadeem,628
-S Narwal,629
-S Rana,630
-S Randiv,631
-S Sandeep Warrier,632
-S Sohal,633
-S Sreesanth,634
-S Sriram,635
-S Tyagi,636
-S Vidyut,637
-SA Abbott,638
-SA Asnodkar,639
-SA Yadav,640
-SB Bangar,641
-SB Dubey,642
-SB Jakati,643
-SB Joshi,644
-SB Styris,645
-SB Wagh,646
-SC Ganguly,647
-SC Kuggeleijn,648
-SD Chitnis,649
-SD Hope,650
-SD Lad,651
-SE Bond,652
-SE Marsh,653
-SE Rutherford,654
-SH Johnson,655
-SJ Srivastava,656
-SK Raina,657
-SK Rasheed,658
-SK Trivedi,659
-SK Warne,660
-SL Malinga,661
-SM Boland,662
-SM Curran,663
-SM Harwood,664
-SM Katich,665
-SM Pollock,666
-SMSM Senanayake,667
-SN Khan,668
-SN Thakur,669
-SO Hetmyer,670
-SP Fleming,671
-SP Goswami,672
-SP Jackson,673
-SP Narine,674
-SPD Smith,675
-SR Dubey,676
-SR Tendulkar,677
-SR Watson,678
-SS Agarwal,679
-SS Cottrell,680
-SS Iyer,681
-SS Mishra,682
-SS Mundhe,683
-SS Prabhudessai,684
-SS Sarkar,685
-SS Shaikh,686
-SS Tiwary,687
-SSB Magala,688
-ST Jayasuriya,689
-STR Binny,690
-SU Parakh,691
-SV Samson,692
-SW Billings,693
-SW Tait,694
-SZ Mulani,695
-Sachin Baby,696
-Sakib Hussain,697
-Salil Arora,698
-Salman Butt,699
-Sameer Rizvi,700
-Sandeep Sharma,701
-Sanvir Singh,702
-Saurav Chauhan,703
-Sediqullah Atal,704
-Shahbaz Ahmed,705
-Shahid Afridi,706
-Shakib Al Hasan,707
-Shashank Singh,708
-Shivam Mavi,709
-Shivam Sharma,710
-Shivam Singh,711
-Shivang Kumar,712
-Shoaib Ahmed,713
-Shoaib Akhtar,714
-Shoaib Malik,715
-Shubman Gill,716
-Sikandar Raza,717
-Simarjeet Singh,718
-Sohail Tanvir,719
-Sonu Yadav,720
-Subhransu Senapati,721
-Sumit Kumar,722
-Sunny Gupta,723
-Sunny Singh,724
-Suryansh Shedge,725
-Suyash Sharma,726
-Swapnil Singh,727
-T Banton,728
-T Dahiya,729
-T Henderson,730
-T Kohler-Cadmore,731
-T Kohli,732
-T Mishra,733
-T Natarajan,734
-T Shamsi,735
-T Stubbs,736
-T Taibu,737
-T Thushara,738
-T Vijay,739
-TA Boult,740
-TD Paine,741
-TG Southee,742
-TH David,743
-TK Curran,744
-TL Seifert,745
-TL Suman,746
-TM Dilshan,747
-TM Head,748
-TM Srivastava,749
-TP Sudhindra,750
-TR Birt,751
-TS Mills,752
-TU Deshpande,753
-Tanay Thyagarajan,754
-Tanush Kotian,755
-Tejas Baroka,756
-Tilak Varma,757
-U Kaul,758
-UA Birla,759
-UBT Chand,760
-UT Khawaja,761
-UT Yadav,762
-Umar Gul,763
-Umran Malik,764
-Urvil Patel,765
-V Kaverappa,766
-V Kohli,767
-V Nigam,768
-V Pratap Singh,769
-V Puthur,770
-V Sehwag,771
-V Shankar,772
-V Suryavanshi,773
-V Viyaskanth,774
-VG Arora,775
-VH Zol,776
-VR Aaron,777
-VR Iyer,778
-VRV Singh,779
-VS Malik,780
-VS Yeligati,781
-VVS Laxman,782
-VY Mahesh,783
-Vijaykumar Vyshak,784
-Virat Singh,785
-Vishnu Vinod,786
-Vivrant Sharma,787
-W Jaffer,788
-W O'Rourke,789
-WA Mota,790
-WD Parnell,791
-WG Jacks,792
-WP Saha,793
-WPUJC Vaas,794
-Washington Sundar,795
-X Thalaivan Sargunam,796
-XC Bartlett,797
-Y Gnaneswara Rao,798
-Y Nagar,799
-Y Prithvi Raj,800
-Y Venugopal Rao,801
-YA Abdulla,802
-YBK Jaiswal,803
-YK Pathan,804
-YS Chahal,805
-YV Dhull,806
-YV Takawale,807
-Yash Dayal,808
-Yash Raj Punja,809
-Yash Thakur,810
-Yashpal Singh,811
-Younis Khan,812
-Yudhvir Singh,813
-Yuvraj Singh,814
-Z Khan,815
-Zeeshan Ansari,816
+player_name,player_id,alias_name
+A Ashish Reddy,1,A Ashish Reddy
+A Badoni,2,A Badoni
+A Badoni,2,Ayush Badoni
+A Badoni,2,Badoni
+A Chandila,3,A Chandila
+A Chopra,4,A Chopra
+A Choudhary,5,A Choudhary
+A Dananjaya,6,A Dananjaya
+A Dananjaya,6,Dananjaya
+A Flintoff,7,A Flintoff
+A Flintoff,7,Flintoff
+A Kamboj,8,Anshul Kamboj
+A Kumble,9,Anil Kumble
+A Manohar,10,Abhinav Manohar
+A Mhatre,11,Ayush Mhatre
+A Mishra,12,Amit Mishra
+A Mithun,13,A Mithun
+A Mukund,14,A Mukund
+A Nehra,15,A Nehra
+A Nehra,15,Ashish Nehra
+A Nehra,15,Nehra
+A Nel,16,A Nel
+A Nortje,17,Anrich Nortje
+A Raghuvanshi,18,Angkrish Raghuvanshi
+A Raghuvanshi,18,Raghuvanshi
+A Singh,19,Anmolpreet Singh
+A Symonds,20,Andrew Symonds
+A Symonds,20,Symonds
+A Tomar,21,A Tomar
+A Uniyal,22,A Uniyal
+A Zampa,23,A Zampa
+A Zampa,23,Zampa
+AA Bilakhia,24,AA Bilakhia
+AA Chavan,25,AA Chavan
+AA Jhunjhunwala,26,AA Jhunjhunwala
+AA Kazi,27,AA Kazi
+AA Kulkarni,28,Arshin Kulkarni
+AA Noffke,29,AA Noffke
+AB Agarkar,30,AB Agarkar
+AB Barath,31,AB Barath
+AB Dinda,32,Ashok Dinda
+AB McDonald,33,AB McDonald
+AB de Villiers,34,AB de Villiers
+AB de Villiers,34,ABD
+AB de Villiers,34,mr 360
+AC Blizzard,35,AC Blizzard
+AC Gilchrist,36,Adam Gilchrist
+AC Gilchrist,36,Gilchrist
+AC Thomas,37,AC Thomas
+AC Voges,38,AC Voges
+AD Hales,39,AD Hales
+AD Mascarenhas,40,AD Mascarenhas
+AD Mathews,41,Angelo Mathews
+AD Nath,42,AD Nath
+AD Russell,43,Andre Russell
+AD Russell,43,Russell
+AF Milne,44,Adam Milne
+AG Murtaza,45,AG Murtaza
+AG Paunikar,46,AG Paunikar
+AJ Finch,47,Aaron Finch
+AJ Finch,47,Finch
+AJ Hosein,48,Akeal Hosein
+AJ Turner,49,AJ Turner
+AJ Tye,50,Andrew Tye
+AK Markram,51,Aiden Markram
+AL Menaria,52,AL Menaria
+AM Ghazanfar,53,AM Ghazanfar
+AM Ghazanfar,53,Ghazanfar
+AM Nayar,54,AM Nayar
+AM Rahane,55,Ajinkya Rahane
+AM Rahane,55,Rahane
+AM Salvi,56,AM Salvi
+AN Ahmed,57,Shahbaz Ahmed
+AN Ghosh,58,AN Ghosh
+AP Dole,59,AP Dole
+AP Majumdar,60,AP Majumdar
+AP Majumdar,60,Majumdar
+AP Tare,61,AP Tare
+AR Bawne,62,AR Bawne
+AR Patel,63,Axar Patel
+AS Joseph,64,Alzarri Joseph
+AS Rajpoot,65,AS Rajpoot
+AS Raut,66,AS Raut
+AS Roy,67,Anukul Roy
+AS Yadav,68,AS Yadav
+AT Carey,69,AT Carey
+AT Rayudu,70,Ambati Rayudu
+AT Rayudu,70,Rayudu
+AU Rashid,71,AU Rashid
+AUK Pathan,72,AUK Pathan
+AV Wankhade,73,AV Wankhade
+Abdul Basith,74,Abdul Basith
+Abdul Samad,75,Abdul Samad
+Abdur Razzak,76,Abdur Razzak
+Abhinandan Singh,77,Anmolpreet Singh
+Abhishek Sharma,78,Abhishek Sharma
+Abishek Porel,79,Abishek Porel
+Akash Deep,80,Akash Deep
+Akash Madhwal,81,Akash Madhwal
+Akash Singh,82,Anmolpreet Singh
+Akshat Raghuwanshi,83,Akshat Raghuwanshi
+Aman Hakim Khan,84,Avesh Khan
+Anand Rajan,85,T Natarajan
+Aniket Verma,86,Aniket Verma
+Anirudh Singh,87,Anmolpreet Singh
+Ankit Sharma,88,Abhishek Sharma
+Ankit Soni,89,Ankit Soni
+Anmolpreet Singh,90,Anmolpreet Singh
+Anuj Rawat,91,Anuj Rawat
+Anureet Singh,92,Anmolpreet Singh
+Arjun Tendulkar,93,Arjun Tendulkar
+Arshad Khan,94,Arshad Khan
+Arshdeep Singh,96,Arshdeep Singh
+Ashok Sharma,97,Ashok Sharma
+Ashutosh Sharma,98,Ashutosh Sharma
+Ashwani Kumar,99,Ashwani Kumar
+Atharva Taide,100,Atharva Taide
+Auqib Nabi,101,Auqib Nabi
+Avesh Khan,102,Avesh Khan
+Azhar Mahmood,103,Azhar Mahmood
+Azmatullah Omarzai,104,Azmatullah Omarzai
+B Akhil,105,B Akhil
+B Aparajith,106,B Aparajith
+B Chipli,107,B Chipli
+B Geeves,108,B Geeves
+B Indrajith,109,B Indrajith
+B Kumar,110,Bhuvneshwar Kumar
+B Laughlin,111,B Laughlin
+B Lee,112,B Lee
+B Muzarabani,113,B Muzarabani
+B Sai Sudharsan,114,Sai Sudharsan
+B Stanlake,115,B Stanlake
+B Sumanth,116,B Sumanth
+BA Bhatt,117,BA Bhatt
+BA Stokes,118,Ben Stokes
+BAW Mendis,119,Ajantha Mendis
+BB McCullum,120,Brendon McCullum
+BB McCullum,120,Mcullum
+BB Samantray,121,BB Samantray
+BB Sran,122,BB Sran
+BCJ Cutting,123,BCJ Cutting
+BE Hendricks,124,BE Hendricks
+BJ Dwarshuis,125,BJ Dwarshuis
+BJ Haddin,126,BJ Haddin
+BJ Hodge,127,BJ Hodge
+BJ Rohrer,128,BJ Rohrer
+BKG Mendis,129,Ajantha Mendis
+BMAJ Mendis,130,Ajantha Mendis
+BR Dunk,131,BR Dunk
+BR Sharath,132,BR Sharath
+BW Hilfenhaus,133,BW Hilfenhaus
+Basil Thampi,134,Basil Thampi
+Bipul Sharma,135,Bipul Sharma
+Brijesh Sharma,136,Brijesh Sharma
+C Bosch,137,Corbin Bosch
+C Connolly,138,C Connolly
+C Ganapathy,139,C Ganapathy
+C Green,140,Cameron Green
+C Madan,141,C Madan
+C Munro,142,C Munro
+C Nanda,143,C Nanda
+C Sakariya,144,Chetan Sakariya
+C de Grandhomme,145,C de Grandhomme
+CA Ingram,146,CA Ingram
+CA Lynn,147,CA Lynn
+CA Pujara,148,Cheteshwar Pujara
+CH Gayle,149,Chris Gayle
+CH Morris,150,Chris Morris
+CJ Anderson,151,Corey Anderson
+CJ Dala,152,CJ Dala
+CJ Ferguson,153,Lockie Ferguson
+CJ Green,154,Cameron Green
+CJ Jordan,155,Chris Jordan
+CJ McKay,156,CJ McKay
+CK Kapugedera,157,CK Kapugedera
+CK Langeveldt,158,CK Langeveldt
+CL White,159,CL White
+CM Gautam,160,CM Gautam
+CR Brathwaite,161,Carlos Brathwaite
+CR Woakes,162,Chris Woakes
+CRD Fernando,163,CRD Fernando
+CV Varun,164,CV Varun
+D Brevis,165,Dewald Brevis
+D Ferreira,166,D Ferreira
+D Jansen,167,Marco Jansen
+D Kalyankrishna,168,D Kalyankrishna
+D Madushanka,169,D Madushanka
+D Padikkal,170,Devdutt Padikkal
+D Pretorius,171,D Pretorius
+D Salunkhe,172,D Salunkhe
+D Wiese,173,D Wiese
+D du Preez,174,D du Preez
+DA Miller,175,David Miller
+DA Payne,176,DA Payne
+DA Warner,177,David Warner
+DAJ Bracewell,178,Michael Bracewell
+DB Das,179,DB Das
+DB Ravi Teja,180,DB Ravi Teja
+DE Bollinger,181,Doug Bollinger
+DG Nalkande,182,Darshan Nalkande
+DH Yagnik,183,DH Yagnik
+DJ Bravo,184,Dwayne Bravo
+DJ Harris,185,DJ Harris
+DJ Hooda,186,DJ Hooda
+DJ Hussey,187,DJ Hussey
+DJ Jacobs,188,DJ Jacobs
+DJ Malan,189,DJ Malan
+DJ Mitchell,190,DJ Mitchell
+DJ Muthuswami,191,DJ Muthuswami
+DJ Thornely,192,DJ Thornely
+DJ Willey,193,DJ Willey
+DJG Sammy,194,Darren Sammy
+DJM Short,195,DJM Short
+DL Chahar,196,Deepak Chahar
+DL Vettori,197,DL Vettori
+DM Bravo,198,Dwayne Bravo
+DNT Zoysa,199,DNT Zoysa
+DP Conway,200,Devon Conway
+DP Nannes,201,Dirk Nannes
+DP Vijaykumar,202,DP Vijaykumar
+DPMD Jayawardene,203,Mahela Jayawardene
+DR Martyn,204,DR Martyn
+DR Sams,205,Daniel Sams
+DR Shorey,206,DR Shorey
+DR Smith,207,Dwayne Smith
+DS Kulkarni,208,Arshin Kulkarni
+DS Lehmann,209,DS Lehmann
+DS Rathi,210,DS Rathi
+DT Christian,211,Daniel Christian
+DT Patil,212,DT Patil
+DV Malewar,213,DV Malewar
+DW Steyn,214,Dale Steyn
+Dhruv Jurel,215,Dhruv Jurel
+E Lewis,216,E Lewis
+E Malinga,217,E Malinga
+EJG Morgan,218,Eoin Morgan
+ER Dwivedi,219,ER Dwivedi
+F Behardien,220,F Behardien
+F du Plessis,221,Faf du Plessis
+FA Allen,222,Fabian Allen
+FH Allen,223,Fabian Allen
+FH Edwards,224,FH Edwards
+FY Fazal,225,FY Fazal
+Fazalhaq Farooqi,226,Fazalhaq Farooqi
+G Coetzee,227,Gerald Coetzee
+G Gambhir,228,Gautam Gambhir
+GB Hogg,229,Brad Hogg
+GC Smith,230,GC Smith
+GC Viljoen,231,GC Viljoen
+GD McGrath,232,GD McGrath
+GD Phillips,233,Glenn Phillips
+GF Linde,234,GF Linde
+GH Vihari,235,GH Vihari
+GHS Garton,236,GHS Garton
+GJ Bailey,237,GJ Bailey
+GJ Maxwell,238,Glenn Maxwell
+GR Napier,239,GR Napier
+GS Sandhu,240,GS Sandhu
+Gagandeep Singh,241,Gagandeep Singh
+Gulbadin Naib,242,Gulbadin Naib
+Gurjapneet Singh,243,Gurjapneet Singh
+Gurkeerat Singh,244,Gurkeerat Singh
+Gurnoor Brar,245,Gurnoor Brar
+H Das,246,H Das
+H Klaasen,247,Heinrich Klaasen
+H Klaasen,247,Klaasen
+H Sharma,248,H Sharma
+HC Brook,249,Harry Brook
+HE van der Dussen,250,HE van der Dussen
+HF Gurney,251,HF Gurney
+HH Gibbs,252,HH Gibbs
+HH Pandya,253,Hardik
+HH Pandya,253,Hardik Pandya
+HM Amla,254,Hashim Amla
+HR Shokeen,255,HR Shokeen
+HV Patel,256,Harshal Patel
+Harbhajan Singh,257,Harbhajan Singh
+Harbhajan Singh,257,Bajji
+Harbhajan Singh,257,Harbhajan
+Harmeet Singh,258,Harmeet Singh
+Harpreet Brar,259,Harpreet Brar
+Harpreet Singh,260,Harpreet Singh
+Harsh Dubey,261,Harsh Dubey
+Harshit Rana,262,Harshit Rana
+Himmat Singh,263,Himmat Singh
+I Malhotra,264,I Malhotra
+I Sharma,265,Ishant Sharma
+I Udana,266,I Udana
+IC Pandey,267,IC Pandey
+IC Porel,268,Abishek Porel
+IK Pathan,269,Irfan Pathan
+IR Jaggi,270,IR Jaggi
+IS Sodhi,271,IS Sodhi
+Imran Tahir,272,Imran Tahir
+Iqbal Abdulla,273,Iqbal Abdulla
+Ishan Kishan,274,Ishan Kishan
+J Arunkumar,275,J Arunkumar
+J Botha,276,J Botha
+J Fraser-McGurk,277,Jake Fraser-McGurk
+J Little,278,J Little
+J Overton,279,J Overton
+J Suchith,280,J Suchith
+J Syed Mohammad,281,J Syed Mohammad
+J Theron,282,J Theron
+J Yadav,283,J Yadav
+JA Duffy,284,JA Duffy
+JA Duffy,284,Duffy
+JA Morkel,285,Morne Morkel
+JA Richardson,286,JA Richardson
+JC Archer,287,JC Archer
+JC Archer,287,Archer
+JC Buttler,288,Jos Buttler
+JD Ryder,289,JD Ryder
+JD Unadkat,290,Jaydev Unadkat
+JDP Oram,291,JDP Oram
+JDS Neesham,292,Jimmy Neesham
+JE Root,293,JE Root
+JE Taylor,294,Ross Taylor
+JEC Franklin,295,JEC Franklin
+JG Bethell,296,Jacob Bethell
+JG Bethell,296,Bethell
+JH Kallis,297,Jacques Kallis
+JJ Bumrah,298,Jasprit Bumrah
+JJ Bumrah,298,Bumrah
+JJ Roy,299,JJ Roy
+JJ van der Wath,300,JJ van der Wath
+JL Denly,301,JL Denly
+JL Pattinson,302,JL Pattinson
+JM Bairstow,303,Jonny Bairstow
+JM Cox,304,JM Cox
+JM Kemp,305,JM Kemp
+JM Sharma,306,Joginder Sharma
+JO Holder,307,Jason Holder
+JO Holder,307,Holder
+JP Behrendorff,308,Jason Behrendorff
+JP Duminy,309,JP Duminy
+JP Faulkner,310,James Faulkner
+JP Inglis,311,JP Inglis
+JPR Scantlebury-Searles,312,JPR Scantlebury-Searles
+JR Hazlewood,313,Josh Hazlewood
+JR Hazlewood,313,Hazlewood
+JR Hopes,314,JR Hopes
+JR Philippe,315,JR Philippe
+JW Hastings,316,JW Hastings
+Jalaj S Saxena,317,Jalaj S Saxena
+Jaskaran Singh,318,Jaskaran Singh
+Joginder Sharma,319,Joginder Sharma
+K Goel,320,K Goel
+K Gowtham,321,K Gowtham
+K Kartikeya,322,K Kartikeya
+K Khejroliya,323,K Khejroliya
+K Rabada,324,Kagiso Rabada
+K Rabada,324,Rabada
+K Santokie,325,K Santokie
+K Upadhyay,326,K Upadhyay
+K Yadav,327,Kuldeep Yadav
+KA Jamieson,328,KA Jamieson
+KA Maharaj,329,KA Maharaj
+KA Pollard,330,Kieron Pollard
+KA Pollard,330,Pollard
+KAJ Roach,331,KAJ Roach
+KB Arun Karthik,332,KB Arun Karthik
+KC Cariappa,333,KC Cariappa
+KC Sangakkara,334,Kumar Sangakkara
+KD Karthik,335,Dinesh Karthik
+KH Devdhar,336,KH Devdhar
+KH Pandya,337,Krunal Pandya
+KJ Abbott,338,KJ Abbott
+KK Ahmed,339,Khaleel Ahmed
+KK Cooper,340,KK Cooper
+KK Nair,341,Karun Nair
+KL Nagarkoti,342,KL Nagarkoti
+KL Rahul,343,KL Rahul
+KL Rahul,343,Rahul
+KM Asif,344,KM Asif
+KM Jadhav,345,Kedar Jadhav
+KMA Paul,346,KMA Paul
+KMDN Kulasekara,347,KMDN Kulasekara
+KP Appanna,348,KP Appanna
+KP Pietersen,349,Kevin Pietersen
+KR Mayers,350,KR Mayers
+KR Sen,351,KR Sen
+KS Bharat,352,KS Bharat
+KS Rathore,353,KS Rathore
+KS Sharma,354,Karn Sharma
+KS Williamson,355,Kane Williamson
+KT Maphaka,356,Kwena Maphaka
+KV Sharma,357,Karn Sharma
+KW Richardson,358,KW Richardson
+Kamran Akmal,359,Kamran Akmal
+Kamran Khan,360,Kamran Khan
+Karanveer Singh,361,Karanveer Singh
+Karim Janat,362,Karim Janat
+Kartik Sharma,363,Karn Sharma
+Kartik Tyagi,364,Kartik Tyagi
+Krish Bhagat,365,Krish Bhagat
+Kuldeep Yadav,366,Kuldeep Yadav
+Kumar Kushagra,367,Kumar Kushagra
+L Ablish,368,L Ablish
+L Balaji,369,Lakshmipathy Balaji
+L Ngidi,370,Lungi Ngidi
+L Ronchi,371,L Ronchi
+L Wood,372,L Wood
+LA Carseldine,373,LA Carseldine
+LA Pomersbach,374,LA Pomersbach
+LB Williams,375,LB Williams
+LE Plunkett,376,LE Plunkett
+LG Pretorius,377,LG Pretorius
+LH Ferguson,378,Lockie Ferguson
+LI Meriwala,379,LI Meriwala
+LJ Wright,380,LJ Wright
+LMP Simmons,381,Lendl Simmons
+LPC Silva,382,LPC Silva
+LR Shukla,383,LR Shukla
+LRPL Taylor,384,Ross Taylor
+LS Livingstone,385,Liam Livingstone
+Lalit Yadav,386,Lalit Yadav
+Liton Das,387,Liton Das
+M Ashwin,388,Murugan Ashwin
+M Jansen,389,Marco Jansen
+M Kaif,390,M Kaif
+M Kartik,391,M Kartik
+M Klinger,392,M Klinger
+M Manhas,393,M Manhas
+M Markande,394,Mayank Markande
+M Morkel,395,Morne Morkel
+M Muralitharan,396,M Muralitharan
+M Ntini,397,M Ntini
+M Pathirana,398,Matheesha Pathirana
+M Pathirana,398,Pathirana
+M Prasidh Krishna,399,Prasidh Krishna
+M Rawat,400,M Rawat
+M Shahrukh Khan,401,M Shahrukh Khan
+M Siddharth,402,M Siddharth
+M Theekshana,403,M Theekshana
+M Tiwari,404,M Tiwari
+M Vijay,405,Murali Vijay
+M Vohra,406,M Vohra
+M de Lange,407,M de Lange
+MA Agarwal,408,Mayank Agarwal
+MA Khote,409,MA Khote
+MA Starc,410,Mitchell Starc
+MA Wood,411,MA Wood
+MB Parmar,412,MB Parmar
+MC Henriques,413,MC Henriques
+MC Juneja,414,MC Juneja
+MD Choudhary,415,MD Choudhary
+MD Mishra,416,Amit Mishra
+MD Shanaka,417,MD Shanaka
+MDKJ Perera,418,Thisara Perera
+MEK Hussey,419,Michael Hussey
+MF Maharoof,420,MF Maharoof
+MG Bracewell,421,Michael Bracewell
+MG Johnson,422,Spencer Johnson
+MG Neser,423,MG Neser
+MJ Clarke,424,MJ Clarke
+MJ Guptill,425,Martin Guptill
+MJ Henry,426,MJ Henry
+MJ Lumb,427,MJ Lumb
+MJ McClenaghan,428,Mitchell McClenaghan
+MJ Owen,429,MJ Owen
+MJ Santner,430,Mitchell Santner
+MJ Suthar,431,Manav Suthar
+MK Lomror,432,Mahipal Lomror
+MK Pandey,433,Manish Pandey
+MK Tiwary,434,Manoj Tiwary
+ML Hayden,435,Matthew Hayden
+MM Ali,436,Moeen Ali
+MM Patel,437,Munaf Patel
+MM Sharma,438,Mohit Sharma
+MN Samuels,439,MN Samuels
+MN van Wyk,440,MN van Wyk
+MP Breetzke,441,MP Breetzke
+MP Stoinis,442,Marcus Stoinis
+MP Yadav,443,Mayank Yadav
+MR Marsh,444,Mitchell Marsh
+MS Bhandage,445,MS Bhandage
+MS Bisla,446,MS Bisla
+MS Dhoni,447,MS Dhoni
+MS Dhoni,447,Thala
+MS Dhoni,447,doni
+MS Dhoni,447,mahi
+MS Gony,448,MS Gony
+MS Wade,449,MS Wade
+MV Boucher,450,MV Boucher
+MW Short,451,MW Short
+Mandeep Singh,452,Mandeep Singh
+Mashrafe Mortaza,453,Mashrafe Mortaza
+Mayank Dagar,454,Mayank Dagar
+Mayank Rawat,455,Mayank Rawat
+Milind Kumar,456,Milind Kumar
+Misbah-ul-Haq,457,Misbah-ul-Haq
+Mohammad Ashraful,458,Mohammad Ashraful
+Mohammad Asif,459,Mohammad Asif
+Mohammad Hafeez,460,Mohammad Hafeez
+Mohammad Nabi,461,Mohammad Nabi
+Mohammed Shami,462,Mohammed Shami
+Mohammed Siraj,463,Mohammed Siraj
+Mohit Rathee,464,Mohit Rathee
+Mohsin Khan,465,Mohsin Khan
+Monu Kumar,466,Monu Kumar
+Mujeeb Ur Rahman,467,Mustafizur Rahman
+Mukesh Choudhary,468,Mukesh Choudhary
+Mukesh Kumar,469,Mukesh Kumar
+Musheer Khan,470,Mohsin Khan
+Mustafizur Rahman,471,Mustafizur Rahman
+N Burger,472,N Burger
+N Jagadeesan,473,N Jagadeesan
+N Pooran,474,Nicholas Pooran
+N Rana,475,Nitish Rana
+N Saini,476,N Saini
+N Sindhu,477,Nishant Sindhu
+N Thushara,478,Nuwan Thushara
+N Wadhera,479,Nehal Wadhera
+NA Saini,480,Navdeep Saini
+NB Singh,481,NB Singh
+ND Doshi,482,ND Doshi
+NJ Maddinson,483,NJ Maddinson
+NJ Rimmington,484,NJ Rimmington
+NK Patel,485,Axar Patel
+NL McCullum,486,NL McCullum
+NLTC Perera,487,Thisara Perera
+NM Coulter-Nile,488,Nathan Coulter-Nile
+NS Naik,489,NS Naik
+NT Ellis,490,NT Ellis
+NV Ojha,491,Naman Ojha
+Naman Dhir,492,Naman Dhir
+Navdeep Saini,493,Navdeep Saini
+Naveen-ul-Haq,494,Naveen-ul-Haq
+Nithish Kumar Reddy,495,Nitish Kumar Reddy
+Noor Ahmad,496,Noor Ahmad
+O Thomas,497,O Thomas
+OA Shah,498,OA Shah
+OC McCoy,499,OC McCoy
+OF Smith,500,Odean Smith
+P Amarnath,501,P Amarnath
+P Awana,502,P Awana
+P Chopra,503,P Chopra
+P Dogra,504,P Dogra
+P Dubey,505,Pravin Dubey
+P Kumar,506,Praveen Kumar
+P Negi,507,Pawan Negi
+P Nissanka,508,Pathum Nissanka
+P Parameswaran,509,P Parameswaran
+P Prasanth,510,P Prasanth
+P Ray Barman,511,P Ray Barman
+P Sahu,512,P Sahu
+P Simran Singh,513,P Simran Singh
+P Suyal,514,P Suyal
+PA Patel,515,Parthiv Patel
+PA Reddy,516,PA Reddy
+PBB Rajapaksa,517,PBB Rajapaksa
+PC Valthaty,518,Paul Valthaty
+PD Collingwood,519,Paul Collingwood
+PD Salt,520,Phil Salt
+PH Solanki,521,PH Solanki
+PHKD Mendis,522,Ajantha Mendis
+PJ Cummins,523,Pat Cummins
+PJ Cummins,523,Cummins
+PJ Sangwan,524,PJ Sangwan
+PK Garg,525,Priyam Garg
+PM Sarvesh Kumar,526,PM Sarvesh Kumar
+PN Mankad,527,PN Mankad
+PP Chawla,528,Piyush Chawla
+PP Hinge,529,PP Hinge
+PP Ojha,530,Pragyan Ojha
+PP Shaw,531,Prithvi Shaw
+PR Shah,532,PR Shah
+PR Veer,533,PR Veer
+PSP Handscomb,534,PSP Handscomb
+PV Tambe,535,PV Tambe
+PVD Chameera,536,PVD Chameera
+PVSN Raju,537,PVSN Raju
+PWA Mulder,538,Wiaan Mulder
+PWH de Silva,539,PWH de Silva
+Pankaj Singh,540,Pankaj Singh
+Parvez Rasool,541,Parvez Rasool
+Prince Yadav,542,Prince Yadav
+Priyansh Arya,543,Priyansh Arya
+Q de Kock,544,Quinton de Kock
+R Ashwin,545,Ravichandran Ashwin
+R Bhatia,546,Rajat Bhatia
+R Bishnoi,547,Ravi Bishnoi
+R Dhawan,548,Rishi Dhawan
+R Dravid,549,R Dravid
+R Goyal,550,R Goyal
+R McLaren,551,R McLaren
+R Minz,552,Robin Minz
+R Ninan,553,R Ninan
+R Parag,554,Riyan Parag
+R Powell,555,R Powell
+R Rampaul,556,R Rampaul
+R Ravindra,557,Rachin Ravindra
+R Sai Kishore,558,R Sai Kishore
+R Sanjay Yadav,559,R Sanjay Yadav
+R Sathish,560,R Sathish
+R Sharma,561,R Sharma
+R Shepherd,562,Romario Shepherd
+R Shukla,563,R Shukla
+R Smaran,564,R Smaran
+R Tewatia,565,Rahul Tewatia
+R Vinay Kumar,566,R Vinay Kumar
+RA Bawa,567,RA Bawa
+RA Jadeja,568,Ravindra Jadeja
+RA Jadeja,568,Jadeja
+RA Shaikh,569,RA Shaikh
+RA Tripathi,570,Rahul Tripathi
+RD Chahar,571,Rahul Chahar
+RD Gaikwad,572,Ruturaj Gaikwad
+RD Gaikwad,572,Gaikwad
+RD Rickelton,573,Rickelton
+RD Rickelton,573,Ryan Rickelton
+RE Levi,574,RE Levi
+RE van der Merwe,575,RE van der Merwe
+RG More,576,RG More
+RG Sharma,577,Rohit Sharma
+RG Sharma,577,Rohit
+RG Sharma,577,Hitman
+RJ Gleeson,578,RJ Gleeson
+RJ Harris,579,RJ Harris
+RJ Peterson,580,RJ Peterson
+RJ Quiney,581,RJ Quiney
+RJW Topley,582,Reece Topley
+RK Bhui,583,RK Bhui
+RK Singh,584,Rinku Singh
+RM Patidar,585,RM Patidar
+RM Patidar,585,Rajat Patidar
+RM Patidar,585,Patidar
+RN ten Doeschate,586,RN ten Doeschate
+RP Meredith,587,RP Meredith
+RP Singh,588,RP Singh
+RR Bhatkal,589,RR Bhatkal
+RR Bose,590,RR Bose
+RR Pant,591,RR Pant
+RR Powar,592,RR Powar
+RR Raje,593,RR Raje
+RR Rossouw,594,RR Rossouw
+RR Sarwan,595,RR Sarwan
+RS Bopara,596,RS Bopara
+RS Gavaskar,597,RS Gavaskar
+RS Ghosh,598,RS Ghosh
+RS Hangargekar,599,RS Hangargekar
+RS Sodhi,600,RS Sodhi
+RT Ponting,601,RT Ponting
+RT Ponting,601,Ponting
+RV Gomez,602,RV Gomez
+RV Patel,603,RV Patel
+RV Uthappa,604,Robin Uthappa
+RW Price,605,RW Price
+Raghu Sharma,606,Raghu Sharma
+Rahmanullah Gurbaz,607,Rahmanullah Gurbaz
+Ramandeep Singh,608,Ramandeep Singh
+Rashid Khan,609,Rashid Khan
+Rasikh Salam,610,Rasikh Salam
+Ravi Bishnoi,611,Ravi Bishnoi
+Ravi Singh,612,Ravi Singh
+S Anirudha,613,S Anirudha
+S Aravind,614,S Aravind
+S Arora,615,S Arora
+S Badree,616,S Badree
+S Badrinath,617,S Badrinath
+S Chanderpaul,618,S Chanderpaul
+S Dhawan,619,Shikhar Dhawan
+S Dhawan,619, Dhawan
+S Dube,620,Shivam Dube
+S Gopal,621,Shreyas Gopal
+S Joseph,622,Alzarri Joseph
+S Kaul,623,S Kaul
+S Kaushik,624,S Kaushik
+S Ladda,625,S Ladda
+S Lamichhane,626,S Lamichhane
+S Midhun,627,S Midhun
+S Nadeem,628,S Nadeem
+S Narwal,629,S Narwal
+S Rana,630,Nitish Rana
+S Randiv,631,S Randiv
+S Sandeep Warrier,632,S Sandeep Warrier
+S Sohal,633,S Sohal
+S Sreesanth,634,Sreesanth
+S Sriram,635,S Sriram
+S Tyagi,636,S Tyagi
+S Vidyut,637,S Vidyut
+SA Abbott,638,SA Abbott
+SA Asnodkar,639,SA Asnodkar
+SA Yadav,640,Suryakumar Yadav
+SA Yadav,640,SKY
+SB Bangar,641,SB Bangar
+SB Dubey,642,SB Dubey
+SB Jakati,643,SB Jakati
+SB Joshi,644,SB Joshi
+SB Styris,645,SB Styris
+SB Wagh,646,SB Wagh
+SC Ganguly,647,SC Ganguly
+SC Ganguly,647,Ganguly
+SC Kuggeleijn,648,SC Kuggeleijn
+SD Chitnis,649,SD Chitnis
+SD Hope,650,SD Hope
+SD Lad,651,SD Lad
+SE Bond,652,SE Bond
+SE Marsh,653,Shaun Marsh
+SE Rutherford,654,Sherfane Rutherford
+SH Johnson,655,Spencer Johnson
+SJ Srivastava,656,SJ Srivastava
+SK Raina,657,Suresh Raina
+SK Raina,657,Raina
+SK Rasheed,658,Shaik Rasheed
+SK Trivedi,659,SK Trivedi
+SK Warne,660,Shane Warne
+SL Malinga,661,Lasith Malinga
+SL Malinga,661,Malinga
+SM Boland,662,SM Boland
+SM Curran,663,Sam Curran
+SM Harwood,664,SM Harwood
+SM Katich,665,SM Katich
+SM Pollock,666,SM Pollock
+SMSM Senanayake,667,SMSM Senanayake
+SN Khan,668,Sarfaraz Khan
+SN Thakur,669,Shardul Thakur
+SO Hetmyer,670,Shimron Hetmyer
+SO Hetmyer,670,Hetmyer
+SP Fleming,671,SP Fleming
+SP Goswami,672,SP Goswami
+SP Jackson,673,SP Jackson
+SP Narine,674,Sunil Narine
+SP Narine,674,Narine
+SPD Smith,675,Steve Smith
+SR Dubey,676,SR Dubey
+SR Tendulkar,677,Tendulkar
+SR Tendulkar,677,Sachin Tendulkar
+SR Tendulkar,677,Sachin
+SR Watson,678,Watson
+SR Watson,678,Shane Watson
+SS Agarwal,679,SS Agarwal
+SS Cottrell,680,SS Cottrell
+SS Iyer,681,Shreyas Iyer
+SS Iyer,681,Shreyas
+SS Iyer,681,Iyer
+SS Mishra,682,Amit Mishra
+SS Mundhe,683,SS Mundhe
+SS Prabhudessai,684,SS Prabhudessai
+SS Sarkar,685,SS Sarkar
+SS Shaikh,686,SS Shaikh
+SS Tiwary,687,Saurabh Tiwary
+SSB Magala,688,SSB Magala
+ST Jayasuriya,689,ST Jayasuriya
+STR Binny,690,Stuart Binny
+SU Parakh,691,SU Parakh
+SV Samson,692,Sanju Samson
+SW Billings,693,SW Billings
+SW Tait,694,SW Tait
+SZ Mulani,695,Shams Mulani
+Sachin Baby,696,Sachin Baby
+Sakib Hussain,697,Sakib Hussain
+Salil Arora,698,Salil Arora
+Salman Butt,699,Salman Butt
+Sameer Rizvi,700,Sameer Rizvi
+Sandeep Sharma,701,Sandeep Sharma
+Sanvir Singh,702,Sanvir Singh
+Saurav Chauhan,703,Saurav Chauhan
+Sediqullah Atal,704,Sediqullah Atal
+Shahbaz Ahmed,705,Shahbaz Ahmed
+Shahid Afridi,706,Shahid Afridi
+Shakib Al Hasan,707,Shakib Al Hasan
+Shashank Singh,708,Swapnil Singh
+Shivam Mavi,709,Shivam Mavi
+Shivam Sharma,710,Shivam Sharma
+Shivam Singh,711,Swapnil Singh
+Shivang Kumar,712,Shivang Kumar
+Shoaib Ahmed,713,Shoaib Ahmed
+Shoaib Akhtar,714,Shoaib Akhtar
+Shoaib Malik,715,Shoaib Malik
+Shubman Gill,716,Shubman Gill
+Shubman Gill,716,Gill
+Shubman Gill,716,Shubman
+Sikandar Raza,717,Sikandar Raza
+Simarjeet Singh,718,Simarjeet Singh
+Sohail Tanvir,719,Sohail Tanvir
+Sonu Yadav,720,Sonu Yadav
+Subhransu Senapati,721,Subhransu Senapati
+Sumit Kumar,722,Sumit Kumar
+Sunny Gupta,723,Sunny Gupta
+Sunny Singh,724,Swapnil Singh
+Suryansh Shedge,725,Suryansh Shedge
+Suyash Sharma,726,Suyash Sharma
+Swapnil Singh,727,Swapnil Singh
+T Banton,728,T Banton
+T Dahiya,729,T Dahiya
+T Henderson,730,T Henderson
+T Kohler-Cadmore,731,T Kohler-Cadmore
+T Kohli,732,T Kohli
+T Mishra,733,Amit Mishra
+T Natarajan,734,T Natarajan
+T Shamsi,735,T Shamsi
+T Stubbs,736,Tristan Stubbs
+T Stubbs,736,stubbs
+T Taibu,737,T Taibu
+T Thushara,738,Nuwan Thushara
+T Vijay,739,Murali Vijay
+TA Boult,740,Trent Boult
+TA Boult,740,boult
+TD Paine,741,TD Paine
+TG Southee,742,Tim Southee
+TH David,743,Tim David
+TK Curran,744,Tom Curran
+TL Seifert,745,TL Seifert
+TL Suman,746,TL Suman
+TM Dilshan,747,Tillakaratne Dilshan
+TM Head,748,Travis Head
+TM Srivastava,749,TM Srivastava
+TP Sudhindra,750,TP Sudhindra
+TR Birt,751,TR Birt
+TS Mills,752,TS Mills
+TU Deshpande,753,Tushar Deshpande
+Tanay Thyagarajan,754,Tanay Thyagarajan
+Tanush Kotian,755,Tanush Kotian
+Tejas Baroka,756,Tejas Baroka
+Tilak Varma,757,Tilak Varma
+U Kaul,758,U Kaul
+UA Birla,759,UA Birla
+UBT Chand,760,UBT Chand
+UT Khawaja,761,UT Khawaja
+UT Yadav,762,Umesh Yadav
+Umar Gul,763,Umar Gul
+Umran Malik,764,Umran Malik
+Urvil Patel,765,Urvil Patel
+V Kaverappa,766,Vidhwath Kaverappa
+V Kohli,767,Virat Kohli
+V Kohli,767,virat
+V Kohli,767,kohli
+V Kohli,767,king kohli
+V Nigam,768,V Nigam
+V Pratap Singh,769,V Pratap Singh
+V Puthur,770,V Puthur
+V Sehwag,771,V Sehwag
+V Sehwag,771,sehwag
+V Shankar,772,Vijay Shankar
+V Suryavanshi,773,Vaibhav Suryavanshi
+V Suryavanshi,773,Suryavanshi
+V Suryavanshi,773,baby boss
+V Viyaskanth,774,V Viyaskanth
+VG Arora,775,Vaibhav Arora
+VH Zol,776,VH Zol
+VR Aaron,777,VR Aaron
+VR Iyer,778,Venkatesh Iyer
+VRV Singh,779,VRV Singh
+VS Malik,780,Umran Malik
+VS Yeligati,781,VS Yeligati
+VVS Laxman,782,VVS Laxman
+VY Mahesh,783,VY Mahesh
+Vijaykumar Vyshak,784,Vijaykumar Vyshak
+Virat Singh,785,Virat Singh
+Vishnu Vinod,786,Vishnu Vinod
+Vivrant Sharma,787,Vivrant Sharma
+W Jaffer,788,W Jaffer
+W O'Rourke,789,W O'Rourke
+WA Mota,790,WA Mota
+WD Parnell,791,Wayne Parnell
+WG Jacks,792,Will Jacks
+WP Saha,793,Wriddhiman Saha
+WPUJC Vaas,794,WPUJC Vaas
+Washington Sundar,795,Washington Sundar
+X Thalaivan Sargunam,796,X Thalaivan Sargunam
+XC Bartlett,797,XC Bartlett
+Y Gnaneswara Rao,798,Y Gnaneswara Rao
+Y Nagar,799,Y Nagar
+Y Prithvi Raj,800,Y Prithvi Raj
+Y Venugopal Rao,801,Y Venugopal Rao
+YA Abdulla,802,YA Abdulla
+YBK Jaiswal,803,Yashasvi Jaiswal
+YBK Jaiswal,803,Jaiswal
+YK Pathan,804,Yusuf Pathan
+YS Chahal,805,Yuzvendra Chahal
+YS Chahal,805,Chahal
+YV Dhull,806,YV Dhull
+YV Takawale,807,YV Takawale
+Yash Dayal,808,Yash Dayal
+Yash Raj Punja,809,Yash Raj Punja
+Yash Thakur,810,Yash Thakur
+Yashpal Singh,811,Yashpal Singh
+Younis Khan,812,Younis Khan
+Yudhvir Singh,813,Yudhvir Singh
+Yuvraj Singh,814,Yuvraj Singh
+Yuvraj Singh,814,Yuvraj
+Z Khan,815,Zaheer Khan
+Zeeshan Ansari,816,Zeeshan Ansari

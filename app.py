@@ -110,6 +110,10 @@ if st.button("Analyze"):
                     )
                 else:
                     rewritten_question = question
+
+                from utils.alias_resolver import normalize_question
+
+                rewritten_question = normalize_question(rewritten_question)
                                 
                 # ---------------------
                 # ROUTE QUERY
@@ -264,6 +268,7 @@ if st.button("Analyze"):
                 )
                 from database.logger import save_query
                 from database.logger import save_sql_log
+                from database.logger import save_tavily_log
 
                 query_log_id = save_query({
                     "question": question,
@@ -286,6 +291,15 @@ if st.button("Analyze"):
                     sql_result=result["sql_result"],
                 
                     error=result.get("sql_error")
+                
+                )
+                save_tavily_log(
+
+                    query_log_id=query_log_id,
+                
+                    search_used=result["search_used"],
+                
+                    tavily_sources=result["tavily_sources"]
                 
                 )
 
