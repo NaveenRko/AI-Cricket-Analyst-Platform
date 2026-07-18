@@ -208,10 +208,10 @@ if st.button("Analyze"):
                 
                 
                 elif agent_type == "rag":
-                
-                    result = get_rag_answer(
+                    result = get_hybrid_answer(
                         llm,
-                        rewritten_question
+                        question,
+                        get_rag_result
                     )
                 
                     final_answer = result["answer"]
