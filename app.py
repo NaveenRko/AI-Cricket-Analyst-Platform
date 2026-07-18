@@ -268,35 +268,53 @@ if st.button("Analyze"):
                     header=not file_exists,                
                     index=False                
                 )
-                from database.logger import save_query
-                from database.logger import save_sql_log
-                from database.logger import save_tavily_log
 
+                # ---------------------
+                # Save Logs
+                # ---------------------
+                
+                from database.logger import (
+                    save_query,
+                    save_sql_log,
+                    save_tavily_log
+                )
+                
                 query_log_id = save_query({
+                
                     "question": question,
                 
                     "rewritten_question": rewritten_question,
                 
                     "agent_selected": agent_type,
                 
+                    "pipeline": result.get("search_used"),
+                
+                    "status": "success",
+                
+                    "error_message": None,
+                
+                    "model_used": "llama-3.3-70b-versatile",
+                
                     "final_answer": final_answer,
                 
                     "response_time": response_time
                 
                 })
+                
                 save_sql_log(
-
+                
                     query_log_id=query_log_id,
                 
-                    generated_sql=result["generated_sql"],
+                    generated_sql=result.get("generated_sql"),
                 
-                    sql_result=result["sql_result"],
+                    sql_result=result.get("sql_result"),
                 
                     error=result.get("sql_error")
                 
                 )
+                
                 save_tavily_log(
-
+                
                     query_log_id=query_log_id,
                 
                     search_used=result.get("search_used"),
@@ -304,9 +322,41 @@ if st.button("Analyze"):
                     tavily_sources=result.get("tavily_sources", [])
                 
                 )
-
             except Exception as e:
-
+            
+                response_time = round(
+                    time.time() - start_time,
+                    2
+                ) if "start_time" in locals() else None
+            
+                from database.logger import save_query
+            
+                save_query({
+            
+                    "question": question if "question" in locals() else None,
+            
+                    "rewritten_question": rewritten_question
+                    if "rewritten_question" in locals()
+                    else question,
+            
+                    "agent_selected": agent_type
+                    if "agent_type" in locals()
+                    else None,
+            
+                    "pipeline": None,
+            
+                    "status": "error",
+            
+                    "error_message": str(e),
+            
+                    "model_used": "llama-3.3-70b-versatile",
+            
+                    "final_answer": None,
+            
+                    "response_time": response_time
+            
+                })
+            
                 st.error(
                     f"Error: {str(e)}"
                 )
