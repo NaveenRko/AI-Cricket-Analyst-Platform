@@ -66,7 +66,10 @@ if "query_log_id" not in st.session_state:
 
 if "show_feedback" not in st.session_state:
     st.session_state.show_feedback = False
-
+# Clear Chat
+if st.button("🧹 Clear Chat"):
+    st.session_state.chat_history = []
+    st.rerun()
 # ==================================
 # LOAD ENV
 # ==================================
