@@ -131,14 +131,6 @@ if st.button("Analyze"):
                 rewritten_question = normalize_question(rewritten_question)
                                 
                 # ---------------------
-                # ROUTE QUERY
-                # ---------------------
-
-                # decide agent type with supervisor
-                # agent_type = decide_agent(
-                  #  llm,
-                   # rewritten_question
-                #)
                 # decide agent with calssifier
                 agent_type = predict_intent(rewritten_question)
                 
@@ -407,8 +399,6 @@ if st.button("Analyze"):
 # ===================================
 
 if st.session_state.answer:
-
-    st.subheader("AI Analysis")
 
     st.write(st.session_state.answer)
 
