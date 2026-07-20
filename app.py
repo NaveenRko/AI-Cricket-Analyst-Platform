@@ -269,54 +269,54 @@ if st.button("Analyze"):
                         st.success("Thank you for your feedback!")
                 with col2:
                     dislike = st.button("👎 No")
-                if dislike:
-                    reason = st.selectbox(
-                
-                        "Why wasn't this helpful?",
-                
-                        [
-                
-                            "Wrong Statistics",
-                
-                            "Wrong Intent",
-                
-                            "Wrong Player",
-                
-                            "Hallucination",
-                
-                            "Incomplete Answer",
-                
-                            "Too Slow",
-                
-                            "Other"
-                
-                        ]
-                
-                    )
-                
-                    comment = st.text_area(
-                
-                        "Additional Comments (optional)"
-                
-                    )
-                
-                    if st.button("Submit Feedback"):
-                
-                        from database.logger import save_feedback_log
-                
-                        save_feedback_log({
-                
-                            "query_log_id": query_log_id,
-                
-                            "feedback": "dislike",
-                
-                            "reason": reason,
-                
-                            "comment": comment
-                
-                        })
-                
-                        st.success("Feedback Submitted")
+                    if dislike:
+                        reason = st.selectbox(
+                    
+                            "Why wasn't this helpful?",
+                    
+                            [
+                    
+                                "Wrong Statistics",
+                    
+                                "Wrong Intent",
+                    
+                                "Wrong Player",
+                    
+                                "Hallucination",
+                    
+                                "Incomplete Answer",
+                    
+                                "Too Slow",
+                    
+                                "Other"
+                    
+                            ]
+                    
+                        )
+                    
+                        comment = st.text_area(
+                    
+                            "Additional Comments (optional)"
+                    
+                        )
+                    
+                        if st.button("Submit Feedback"):
+                    
+                            from database.logger import save_feedback_log
+                    
+                            save_feedback_log({
+                    
+                                "query_log_id": query_log_id,
+                    
+                                "feedback": "dislike",
+                    
+                                "reason": reason,
+                    
+                                "comment": comment
+                    
+                            })
+                    
+                            st.success("Feedback Submitted")
                 # ---------------------
                 # Latency time
                 response_time = round(time.time() - start_time,2)
