@@ -56,11 +56,15 @@ st.write(
 # SESSION STATE
 # ==================================
 
+if "answer" not in st.session_state:
+    st.session_state.answer = None
+
 if "query_log_id" not in st.session_state:
     st.session_state.query_log_id = None
 
 if "show_feedback" not in st.session_state:
     st.session_state.show_feedback = False
+
 # ==================================
 # LOAD ENV
 # ==================================
@@ -246,9 +250,7 @@ if st.button("Analyze"):
                     "AI Analysis"
                 )
 
-                st.write(
-                    final_answer
-                )
+                st.session_state.answer = final_answer
 
                 # ---------------------
                 # Latency time
@@ -358,91 +360,7 @@ if st.button("Analyze"):
                 
                     confidence=None
                 )
-                #feedback
-                st.divider()
-                
-                st.write("### Was this answer helpful?")
-                
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                
-                    if st.button("👍 Yes"):
-                
-                        from database.logger import save_feedback_log
-                
-                        save_feedback_log({
-                
-                            "query_log_id": st.session_state.query_log_id,
-                
-                            "feedback": "like",
-                
-                            "reason": None,
-                
-                            "comment": None
-                
-                        })
-                
-                        st.success("Thank you!")
-                
-                with col2:
-                
-                    if st.button("👎 No"):
-                
-                        st.session_state.show_feedback = True
-                
-                
-                if st.session_state.show_feedback:
-                
-                    reason = st.selectbox(
-                
-                        "Why wasn't this helpful?",
-                
-                        [
-                
-                            "Wrong Statistics",
-                
-                            "Wrong Intent",
-                
-                            "Wrong Player",
-                
-                            "Hallucination",
-                
-                            "Incomplete Answer",
-                
-                            "Too Slow",
-                
-                            "Other"
-                
-                        ]
-                
-                    )
-                
-                    comment = st.text_area(
-                
-                        "Additional Comments"
-                
-                    )
-                
-                    if st.button("Submit Feedback"):
-                
-                        from database.logger import save_feedback_log
-                
-                        save_feedback_log({
-                
-                            "query_log_id": st.session_state.query_log_id,
-                
-                            "feedback": "dislike",
-                
-                            "reason": reason,
-                
-                            "comment": comment
-                
-                        })
-                
-                        st.success("Feedback Submitted!")
-                
-                        st.session_state.show_feedback = False                            
+                                            
             except Exception as e:
             
                 response_time = round(
@@ -481,3 +399,80 @@ if st.button("Analyze"):
                 st.error(
                     f"Error: {str(e)}"
                 )
+
+# ===================================
+# Display latest answer
+# ===================================
+
+if st.session_state.answer:
+
+    st.subheader("AI Analysis")
+
+    st.write(st.session_state.answer)
+
+if st.session_state.answer:
+
+    st.divider()
+
+    st.write("### Was this answer helpful?")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        if st.button("👍 Yes"):
+
+            save_feedback_log({
+
+                "query_log_id": st.session_state.query_log_id,
+
+                "feedback": "like",
+
+                "reason": None,
+
+                "comment": None
+
+            })
+
+            st.success("Thanks for your feedback!")
+
+    with col2:
+
+        if st.button("👎 No"):
+
+            st.session_state.show_feedback = True
+
+if st.session_state.show_feedback:
+
+    reason = st.selectbox(
+        "Reason",
+        [
+            "Wrong Statistics",
+            "Wrong Intent",
+            "Wrong Player",
+            "Hallucination",
+            "Incomplete Answer",
+            "Too Slow",
+            "Other"
+        ]
+    )
+
+    comment = st.text_area("Comments")
+
+    if st.button("Submit Feedback"):
+
+        save_feedback_log({
+
+            "query_log_id": st.session_state.query_log_id,
+
+            "feedback":"dislike",
+
+            "reason":reason,
+
+            "comment":comment
+
+        })
+
+        st.success("Feedback Submitted!")
+
+        st.session_state.show_feedback = False
