@@ -37,6 +37,8 @@ import numpy as np
 from datetime import datetime
 import time
 
+from database.logger import save_feedback_log
+
 # ==================================
 # PAGE CONFIG
 # ==================================
