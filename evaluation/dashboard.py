@@ -1,6 +1,8 @@
 import os
 import sys
 
+import streamlit as st
+
 PROJECT_ROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..")
 )
@@ -8,163 +10,168 @@ PROJECT_ROOT = os.path.abspath(
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
+# ---------------------------------------
+# Data
+# ---------------------------------------
 
-import streamlit as st
-import pandas as pd
+from evaluation.supabase_reader import get_dashboard_data
 
-from evaluation.supabase_reader import get_query_logs,get_sql_logs,get_tavily_logs
+# ---------------------------------------
+# Metrics
+# ---------------------------------------
 
-from evaluation.metrics import calculate_metrics
+from evaluation.kpi_metrics import calculate_metrics
+from evaluation.chart_metrics import prepare_metrics
 
+# ---------------------------------------
+# Charts
+# ---------------------------------------
+
+from evaluation.charts.trend import plot_query_trend
+from evaluation.charts.pipeline import plot_pipeline_distribution
+from evaluation.charts.intents import plot_intents
+from evaluation.charts.latency import plot_latency
+
+# ---------------------------------------
+# Page
+# ---------------------------------------
 
 st.set_page_config(
-
     page_title="IPL AI Evaluation Dashboard",
-
     page_icon="📊",
-
     layout="wide"
-
 )
 
 st.title("📊 IPL AI Evaluation Dashboard")
 
-# --------------------------------
-# Load Data
-# --------------------------------
+# ======================================================
+# Load Dashboard Data
+# ======================================================
 
-query_logs = get_query_logs()
+analytics_df = get_dashboard_data()
 
-sql_logs = get_sql_logs()
+# ======================================================
+# Metrics
+# ======================================================
 
-tavily_logs = get_tavily_logs()
+kpis = calculate_metrics(analytics_df)
 
-metrics = calculate_metrics(query_logs)
+chart_data = prepare_metrics(analytics_df)
 
-# --------------------------------
-# KPI Cards
-# --------------------------------
+# ======================================================
+# KPI CARDS
+# ======================================================
 
-col1, col2, col3 = st.columns(3)
+row1 = st.columns(3)
 
-with col1:
-
+with row1[0]:
     st.metric(
-
         "Total Queries",
-
-        metrics["total_queries"]
-
+        kpis["total_queries"]
     )
 
-with col2:
-
+with row1[1]:
     st.metric(
-
         "Average Latency",
-
-        f'{metrics["avg_latency"]} sec'
-
+        f'{kpis["avg_latency"]} sec'
     )
 
-with col3:
-
+with row1[2]:
     st.metric(
-
         "Success Rate",
-
-        f'{metrics["success_rate"]}%'
-
+        f'{kpis["success_rate"]}%'
     )
 
-col4, col5, col6 = st.columns(3)
+row2 = st.columns(3)
 
-with col4:
-
+with row2[0]:
     st.metric(
-
         "SQL Queries",
-
-        metrics["sql_queries"]
-
+        kpis["sql_queries"]
     )
 
-with col5:
-
+with row2[1]:
     st.metric(
-
         "FAISS Queries",
-
-        metrics["rag_queries"]
-
+        kpis["rag_queries"]
     )
 
-with col6:
-
+with row2[2]:
     st.metric(
-
         "Tavily Queries",
-
-        metrics["tavily_queries"]
-
+        kpis["tavily_queries"]
     )
 
-# --------------------------------
-# Query Logs
-# --------------------------------
+# ======================================================
+# Query Trend
+# ======================================================
 
 st.divider()
 
-st.subheader("Recent Query Logs")
+st.subheader("📈 Query Trend")
 
-query_df = pd.DataFrame(query_logs)
-
-st.dataframe(
-
-    query_df,
-
-    use_container_width=True,
-
-    hide_index=True
-
+st.plotly_chart(
+    plot_query_trend(
+        chart_data["trend"]
+    ),
+    use_container_width=True
 )
 
-# --------------------------------
-# SQL Logs
-# --------------------------------
+# ======================================================
+# Pipeline + Intent
+# ======================================================
 
 st.divider()
 
-st.subheader("SQL Logs")
+left, right = st.columns(2)
 
-sql_df = pd.DataFrame(sql_logs)
+with left:
 
-st.dataframe(
+    st.subheader("Pipeline Distribution")
 
-    sql_df,
+    st.plotly_chart(
+        plot_pipeline_distribution(
+            chart_data["pipeline"]
+        ),
+        use_container_width=True
+    )
 
-    use_container_width=True,
+with right:
 
-    hide_index=True
+    st.subheader("Intent Distribution")
 
+    st.plotly_chart(
+        plot_intents(
+            chart_data["intents"]
+        ),
+        use_container_width=True
+    )
+
+# ======================================================
+# Latency
+# ======================================================
+
+st.divider()
+
+st.subheader("Average Latency")
+
+st.plotly_chart(
+    plot_latency(
+        chart_data["latency"]
+    ),
+    use_container_width=True
 )
 
-# --------------------------------
-# Tavily Logs
-# --------------------------------
+# ======================================================
+# Analytics Table
+# ======================================================
 
 st.divider()
 
-st.subheader("Tavily Logs")
-
-tavily_df = pd.DataFrame(tavily_logs)
+st.subheader("Query Explorer")
 
 st.dataframe(
-
-    tavily_df,
-
+    analytics_df,
     use_container_width=True,
-
     hide_index=True
-
 )

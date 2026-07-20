@@ -125,3 +125,14 @@ def save_evaluation_log(
         "confidence": confidence
 
     }).execute()
+
+def save_feedback_log(data):
+
+    response = (
+        supabase
+        .table("feedback_logs")
+        .insert(data)
+        .execute()
+    )
+
+    return response
