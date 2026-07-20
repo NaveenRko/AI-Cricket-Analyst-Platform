@@ -359,10 +359,6 @@ if st.button("Analyze"):
                     confidence=None
                 )
                 #feedback
-                st.subheader("AI Analysis")
-
-                st.write(final_answer)
-                
                 st.divider()
                 
                 st.write("### Was this answer helpful?")
