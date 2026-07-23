@@ -88,12 +88,14 @@ RULES
 
 10. Use LIMIT only when user asks Top N.
 
-11. Never hallucinate:
+11. If Top N is not requested,use ORDER BY and LIMIT 10 as default.
+
+12. Never hallucinate:
     - tables
     - columns
 
-12. If multiple statistics are requested,
+13. If multiple statistics are requested,
 return all of them.
 
-13. Return ONLY SQL.
+14. Return ONLY SQL.
 """

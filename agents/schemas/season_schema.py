@@ -113,11 +113,13 @@ RULES
 
 7. Use LIMIT only for Top N.
 
-8. Never invent tables.
+8. If Top N is not requested,use ORDER BY and LIMIT 10 as default.
 
-9. Never invent columns.
+9. Never invent tables.
 
-10. Return complete rankings when requested.
+10. Never invent columns.
 
-11. Return ONLY SQL.
+11. Return complete rankings when requested.
+
+12. Return ONLY SQL.
 """

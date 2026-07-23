@@ -118,5 +118,29 @@ Rules
 
 8. Never invent columns.
 
+9.Join tables whenever required.
+
+10. Players table contains the official player names and alias names.
+
+11. Statistics tables contain abbreviated names.
+
+    * Ex :- "Vidhwath Kaverappa" - "V Kaverappa"
+
+12. Always JOIN players table to resolve names.
+
+13. If season is mentioned,join matches using match_id.
+
+14. Use LOWER() whenever comparing text.
+
+15. Use ILIKE whenever appropriate.
+
+16. If Top N is requested,use ORDER BY and LIMIT.
+
+17. If Top N is not requested,use ORDER BY and LIMIT 10 as default.
+
+Never hallucinate columns.
+
+Never invent tables.
+
 Return only SQL.
 """

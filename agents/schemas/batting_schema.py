@@ -155,7 +155,7 @@ Players table contains the official player names and alias names.
 
 Statistics tables contain abbreviated names.
 
-Ex :- "Virat Kohli" - "V Kohli"
+Ex :- "Vidhwath Kaverappa" - "V Kaverappa"
 
 Always JOIN players table to resolve names.
 
@@ -168,6 +168,9 @@ Use ILIKE whenever appropriate.
 
 If Top N is requested,
 use ORDER BY and LIMIT.
+
+If Top N is not requested,
+use ORDER BY and LIMIT 10.
 
 Never hallucinate columns.
 

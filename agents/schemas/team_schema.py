@@ -82,9 +82,11 @@ RULES
 
 8. Use LIMIT only if Top N requested.
 
-9. Never invent tables or columns.
+9. If Top N is not requested,use ORDER BY and LIMIT 10 as default.
 
-10. If multiple statistics are requested,
+10. Never invent tables or columns.
+
+11. If multiple statistics are requested,
 return all of them.
 
 11. Return ONLY SQL.

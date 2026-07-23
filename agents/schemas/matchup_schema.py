@@ -95,8 +95,10 @@ RULES
 
 10. Use LIMIT only when Top N is requested.
 
-11. If multiple statistics are requested,
+11. If Top N is not requested,use ORDER BY and LIMIT 10 as default.
+
+12. If multiple statistics are requested,
 return them together.
 
-12. Return ONLY SQL.
+13. Return ONLY SQL.
 """
