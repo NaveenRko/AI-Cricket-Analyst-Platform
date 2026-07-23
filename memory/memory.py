@@ -4,6 +4,6 @@
 #     return_messages=True
 # )
 
-from langchain.memory import ConversationBufferWindowMemory
+from langchain_classic.memory import ConversationBufferWindowMemory
 
 memory = ConversationBufferWindowMemory(k=4, return_messages=True)
