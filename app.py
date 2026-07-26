@@ -133,6 +133,7 @@ if st.button("Analyze"):
                 # decide agent with calssifier
                 # agent_type = predict_intent(rewritten_question)
                 prediction = predict_intent(rewritten_question)
+                st.write(prediction)
 
                 classifier_confidence = prediction["confidence"]
                 
