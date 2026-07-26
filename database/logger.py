@@ -78,27 +78,30 @@ def save_tavily_log(
 import math
 import numpy as np
 
-
-def clean(value):
+def sanitize(value):
 
     if value is None:
         return None
 
-    if isinstance(value, (float, np.floating)):
+    if isinstance(value, np.integer):
+        return int(value)
 
-        if math.isnan(value):
+    if isinstance(value, np.floating):
+
+        if np.isnan(value):
             return None
 
         return float(value)
 
-    if isinstance(value, np.integer):
-        return int(value)
+    if isinstance(value, float):
+
+        if math.isnan(value):
+            return None
 
     if isinstance(value, np.bool_):
         return bool(value)
 
     return value
-
     
 def save_evaluation_log(
 
@@ -128,27 +131,27 @@ def save_evaluation_log(
 
     supabase.table("evaluation_logs").insert({
 
-        "query_log_id": clean(query_log_id),
+        "query_log_id": sanitize(query_log_id),
 
-        "pipeline": clean(pipeline),
+        "pipeline": sanitize(pipeline),
     
-        "status": clean(status),
+        "status": sanitize(status),
     
-        "sql_used": clean(sql_used),
+        "sql_used": sanitize(sql_used),
     
-        "rag_used": clean(rag_used),
+        "rag_used": sanitize(rag_used),
     
-        "tavily_used": clean(tavily_used),
+        "tavily_used": sanitize(tavily_used),
     
-        "generated_sql": clean(generated_sql),
+        "generated_sql": sanitize(generated_sql),
     
-        "llm_calls": clean(llm_calls),
+        "llm_calls": sanitize(llm_calls),
     
-        "response_time": clean(response_time),
+        "response_time": sanitize(response_time),
     
-        "intent": clean(intent),
+        "intent": sanitize(intent),
     
-        "confidence": clean(confidence)
+        "confidence": sanitize(confidence)
 
     }).execute()
 
