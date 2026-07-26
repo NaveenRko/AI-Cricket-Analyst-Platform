@@ -36,6 +36,9 @@ import numpy as np
 from datetime import datetime
 import time
 
+import numpy as np
+import math
+
 from database.logger import save_feedback_log
 
 # ==================================
@@ -135,6 +138,13 @@ if st.button("Analyze"):
                 prediction = predict_intent(rewritten_question)
 
                 classifier_confidence = prediction["confidence"]
+                confidence = classifier_confidence
+
+                if isinstance(confidence, np.floating):
+                    confidence = float(confidence)
+                
+                if isinstance(confidence, float) and math.isnan(confidence):
+                    confidence = None
                 
                 if classifier_confidence >= 0.70:
                 
