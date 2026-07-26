@@ -316,16 +316,16 @@ if st.button("Analyze"):
                     tavily_sources=result.get("tavily_sources", [])
                 
                 )
-                print("pipeline:", pipeline)
-                print("status:", "success" if final_answer else "failed")
-                print("sql_used:", result.get("generated_sql") is not None)
-                print("rag_used:", len(result.get("rag_docs", [])) > 0)
-                print("tavily_used:", result.get("search_used") == "tavily")
-                print("generated_sql:", result.get("generated_sql"))
-                print("llm_calls:", result.get("llm_calls", 2))
-                print("response_time:", response_time)
-                print("intent:", intent)
-                print("confidence:", classifier_confidence)
+                st.write("pipeline:", pipeline)
+                st.write("status:", "success" if final_answer else "failed")
+                st.write("sql_used:", result.get("generated_sql") is not None)
+                st.write("rag_used:", len(result.get("rag_docs", [])) > 0)
+                st.write("tavily_used:", result.get("search_used") == "tavily")
+                st.write("generated_sql:", result.get("generated_sql"))
+                st.write("llm_calls:", result.get("llm_calls", 2))
+                st.write("response_time:", response_time)
+                st.write("intent:", intent)
+                st.write("confidence:", classifier_confidence)
                 save_evaluation_log(
 
                     query_log_id=query_log_id,
