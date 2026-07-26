@@ -43,6 +43,7 @@ Answer naturally.
 """
 
         response = llm.invoke(prompt)
+        usage = response.response_metadata["token_usage"]
 
         return {
 
@@ -58,7 +59,9 @@ Answer naturally.
 
             "tavily_sources": tavily["sources"],
 
-            "search_used": "tavily"
+            "search_used": "tavily",
+
+            "usage": usage
 
         }
 

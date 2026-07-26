@@ -68,6 +68,7 @@ def get_rag_answer(llm, question):
             "question": question
         }
     )
+    usage = response.response_metadata["token_usage"]
 
     return {
         "answer": response.content,
@@ -78,5 +79,7 @@ def get_rag_answer(llm, question):
     
         "sql_error": None,
     
-        "rag_docs": rag_sources
+        "rag_docs": rag_sources,
+
+        "usage": usage
     }

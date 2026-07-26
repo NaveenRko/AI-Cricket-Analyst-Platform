@@ -1,9 +1,7 @@
 import joblib
-
 from sentence_transformers import SentenceTransformer
 
 clf = joblib.load("IntentClassifier/intent_classifier.pkl")
-
 encoder = joblib.load("IntentClassifier/intent_encoder.pkl")
 
 embed_model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -13,9 +11,26 @@ def predict_intent(question):
 
     vec = embed_model.encode([question])
 
+    # Prediction
     pred = clf.predict(vec)
 
-    return encoder.inverse_transform(pred)[0]
+    # Class probabilities
+    probs = clf.predict_proba(vec)
 
-print(predict_intent("Strike rate of Yashasvi Jaiswal"))
-  
+    confidence = float(probs.max())
+
+    intent = encoder.inverse_transform(pred)[0]
+
+    return {
+        "intent": intent,
+        "confidence": confidence
+    }
+
+
+if __name__ == "__main__":
+
+    result = predict_intent(
+        "Strike rate of Yashasvi Jaiswal"
+    )
+
+    print(result)

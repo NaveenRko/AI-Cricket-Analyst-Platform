@@ -134,6 +134,7 @@ Answer:
 """
 
         response = llm.invoke(prompt)
+        usage = response.response_metadata["token_usage"]
 
         return {
 
@@ -149,7 +150,9 @@ Answer:
 
             "tavily_sources": tavily["sources"],
 
-            "search_used": "tavily"
+            "search_used": "tavily",
+
+            "usage": usage
 
         }
 
@@ -168,6 +171,8 @@ Answer:
     rag_answer = rag["answer"]
 
     rag_docs = rag["rag_docs"]
+
+    rag_usage = rag["usage"]
 
     if (
 
@@ -193,7 +198,9 @@ Answer:
 
             "tavily_sources": [],
 
-            "search_used": "rag"
+            "search_used": "rag",
+
+            "usage": rag_usage
 
         }
 
@@ -230,6 +237,8 @@ Answer:
 
     response = llm.invoke(prompt)
 
+    usage = response.response_metadata["token_usage"]
+
     return {
 
         "answer": response.content,
@@ -244,6 +253,8 @@ Answer:
 
         "tavily_sources": tavily["sources"],
 
-        "search_used": "tavily"
+        "search_used": "tavily",
+
+        "usage": usage
 
     }

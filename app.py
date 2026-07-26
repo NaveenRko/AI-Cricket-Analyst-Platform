@@ -9,7 +9,6 @@ import streamlit as st
 
 from langchain_groq import ChatGroq
 
-#from agents.router import route_query
 #from agents.supervisor_agent import decide_agent
 # replace with supervisor agent with classifier
 from IntentClassifier.predict_intent import predict_intent
@@ -132,90 +131,67 @@ if st.button("Analyze"):
                                 
                 # ---------------------
                 # decide agent with calssifier
-                agent_type = predict_intent(rewritten_question)
-                
-                retrieved_docs = []
-                
-                if agent_type == "batting":
-                
-                    result = get_hybrid_answer(
-                        llm,
-                        rewritten_question,
-                        get_batting_result
-                    )
-                    
-                    final_answer = result["answer"]
-                
-                    retrieved_docs = result["rag_docs"]
-                
-                
-                elif agent_type == "bowling":
-                
-                    result = get_hybrid_answer(
-                        llm,
-                        rewritten_question,
-                        get_bowling_result
-                    )
-                
-                    final_answer = result["answer"]
-                
-                    retrieved_docs = result["rag_docs"]
-                
-                
-                elif agent_type == "venue":
-                
-                    result = get_hybrid_answer(
-                        llm,
-                        rewritten_question,
-                        get_venue_result
-                    )
-                
-                    final_answer = result["answer"]
-                
-                    retrieved_docs = result["rag_docs"]
-                
-                
-                elif agent_type == "matchup":
-                
-                    result = get_hybrid_answer(
-                        llm,
-                        rewritten_question,
-                        get_matchup_result
-                    )
-                
-                    final_answer = result["answer"]
-                
-                    retrieved_docs = result["rag_docs"]
-                
-                
-                elif agent_type == "team":
-                
-                    result = get_hybrid_answer(
-                        llm,
-                        rewritten_question,
-                        get_team_result
-                    )
-                
-                    final_answer = result["answer"]
-                
-                    retrieved_docs = result["rag_docs"]
-                
-                
-                elif agent_type == "season":
-                
-                    result = get_hybrid_answer(
-                        llm,
-                        rewritten_question,
-                        get_season_result
-                    )
-                
-                    final_answer = result["answer"]
-                
-                    retrieved_docs = result["rag_docs"]
-                
-                
-                elif agent_type == "rag":
+                # agent_type = predict_intent(rewritten_question)
+                prediction = predict_intent(rewritten_question)
 
+                classifier_confidence = prediction["confidence"]
+                
+                if classifier_confidence >= 0.70:
+                
+                    pipeline = "sql"
+                
+                    intent = prediction["intent"]
+                
+                    router_used = False
+                
+                    router_usage = None
+                
+                else:
+                
+                    from agents.router import llm_router
+                
+                    route = llm_router(
+                        llm,
+                        rewritten_question
+                    )
+                
+                    pipeline = route["pipeline"]
+                
+                    intent = route.get("intent")
+                
+                    router_used = True
+                
+                    router_usage = route["usage"]
+
+                SQL_AGENT_MAP = {
+                    "batting": get_batting_result,
+
+                    "bowling": get_bowling_result,
+                
+                    "venue": get_venue_result,
+                
+                    "season": get_season_result,
+                
+                    "team": get_team_result,
+                
+                    "matchup": get_matchup_result,
+                
+                }
+
+                if pipeline == "sql":
+                
+                    result = get_hybrid_answer(
+                
+                        llm,
+                
+                        rewritten_question,
+                
+                        SQL_AGENT_MAP[intent]
+                
+                    )
+                
+                elif pipeline == "rag":
+                
                     result = get_rag_hybrid_answer(
                 
                         llm,
@@ -224,17 +200,24 @@ if st.button("Analyze"):
                 
                     )
                 
-                    final_answer = result["answer"]
+                elif pipeline == "tavily":
                 
-                    retrieved_docs = result["rag_docs"]        
+                    result = get_tavily_answer(
+                
+                        llm,
+                
+                        rewritten_question
+                
+                    )
+                
                 else:
                 
                     final_answer = (
-                        "I am an IPL specialist AI analyst. "
+                        "I'm an IPL specialist AI analyst. "
                         "Please ask IPL-related questions."
                     )
-                
-                    retrieved_docs = []
+
+                final_answer = result["answer"]
                 # Save conversation (Memory)
                 memory.save_context(
                     {"input": question},
@@ -249,31 +232,6 @@ if st.button("Analyze"):
                 # ---------------------
                 # Latency time
                 response_time = round(time.time() - start_time,2)
-
-                os.makedirs("logs", exist_ok=True)
-                
-                log = pd.DataFrame([{
-                    "timestamp": datetime.now(),
-                    "question": question,               
-                    "rewritten_question": rewritten_question,                
-                    "agent_selected": agent_type,               
-                    "rag_sources": ", ".join(retrieved_docs),              
-                    "final_answer": final_answer,                
-                    "response_time": response_time
-                
-                }])
-                
-                file_exists = os.path.exists(
-                    "logs/query_logs.csv"
-                )
-                
-                log.to_csv(
-                    "logs/query_logs.csv",                
-                    mode="a",                
-                    header=not file_exists,                
-                    index=False                
-                )
-
                 # ---------------------
                 # Save Logs
                 # ---------------------
