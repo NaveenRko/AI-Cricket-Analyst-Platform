@@ -1,5 +1,41 @@
 from database.supabase_client import supabase
+import math
+import numpy as np
 
+def sanitize(value):
+
+    if value is None:
+        return None
+
+    if isinstance(value, dict):
+        return {
+            k: sanitize(v)
+            for k, v in value.items()
+        }
+
+    if isinstance(value, list):
+        return [
+            sanitize(v)
+            for v in value
+        ]
+
+    if isinstance(value, np.integer):
+        return int(value)
+
+    if isinstance(value, np.floating):
+        if np.isnan(value):
+            return None
+        return float(value)
+
+    if isinstance(value, float):
+        if math.isnan(value):
+            return None
+        return value
+
+    if isinstance(value, np.bool_):
+        return bool(value)
+
+    return value
 
 def save_query(data):
 
@@ -34,13 +70,13 @@ def save_sql_log(
         .table("sql_logs")
         .insert({
 
-            "query_log_id": query_log_id,
+            "query_log_id": sanitize(query_log_id),
 
-            "generated_sql": generated_sql,
+            "generated_sql": sanitize(generated_sql),
 
-            "sql_result": sql_result,
+            "sql_result": sanitize(sql_result),
 
-            "error": error
+            "error": sanitize(error)
 
         })
         .execute()
@@ -64,44 +100,16 @@ def save_tavily_log(
         .table("tavily_logs")
         .insert({
 
-            "query_log_id": query_log_id,
+            "query_log_id": sanitize(query_log_id),
 
-            "search_used": search_used,
+            "search_used": sanitize(search_used),
 
-            "tavily_sources": tavily_sources
+            "tavily_sources": sanitize(tavily_sources)
 
         })
         .execute()
     )
 
-
-import math
-import numpy as np
-
-def sanitize(value):
-
-    if value is None:
-        return None
-
-    if isinstance(value, np.integer):
-        return int(value)
-
-    if isinstance(value, np.floating):
-
-        if np.isnan(value):
-            return None
-
-        return float(value)
-
-    if isinstance(value, float):
-
-        if math.isnan(value):
-            return None
-
-    if isinstance(value, np.bool_):
-        return bool(value)
-
-    return value
     
 def save_evaluation_log(
 
