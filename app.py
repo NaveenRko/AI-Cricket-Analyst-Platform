@@ -133,7 +133,6 @@ if st.button("Analyze"):
                 # decide agent with calssifier
                 # agent_type = predict_intent(rewritten_question)
                 prediction = predict_intent(rewritten_question)
-                st.write(prediction)
 
                 classifier_confidence = prediction["confidence"]
                 
@@ -178,6 +177,10 @@ if st.button("Analyze"):
                     "matchup": get_matchup_result,
                 
                 }
+                sql_agent = SQL_AGENT_MAP.get(intent)
+
+                if sql_agent is None:
+                    raise ValueError(f"Unknown SQL intent: {intent}")
 
                 if pipeline == "sql":
                 
@@ -187,7 +190,7 @@ if st.button("Analyze"):
                 
                         rewritten_question,
                 
-                        SQL_AGENT_MAP[intent]
+                        sql_agent
                 
                     )
                 
@@ -212,13 +215,27 @@ if st.button("Analyze"):
                     )
                 
                 else:
+
+                    result = {
                 
-                    final_answer = (
-                        "I'm an IPL specialist AI analyst. "
-                        "Please ask IPL-related questions."
-                    )
+                        "answer":"I'm an IPL specialist AI analyst.",
+                
+                        "generated_sql":None,
+                
+                        "sql_result":None,
+                
+                        "sql_error":None,
+                
+                        "rag_docs":[],
+                
+                        "tavily_sources":[],
+                
+                        "search_used":"out_of_scope"
+                
+                    }
 
                 final_answer = result["answer"]
+            
                 # Save conversation (Memory)
                 memory.save_context(
                     {"input": question},
@@ -250,9 +267,9 @@ if st.button("Analyze"):
                 
                     "rewritten_question": rewritten_question,
                 
-                    "agent_selected": agent_type,
+                    "agent_selected": intent,
                 
-                    "pipeline": result.get("search_used"),
+                    "pipeline": pipeline,
                 
                     "status": "success",
                 
@@ -293,7 +310,7 @@ if st.button("Analyze"):
 
                     query_log_id=query_log_id,
                 
-                    pipeline=result.get("search_used"),
+                    pipeline=pipeline,
                 
                     status="success" if final_answer else "failed",
                 
@@ -309,7 +326,7 @@ if st.button("Analyze"):
                 
                     response_time=response_time,
                 
-                    intent=agent_type,
+                    intent=intent,
                 
                     confidence=None
                 )
@@ -331,8 +348,8 @@ if st.button("Analyze"):
                     if "rewritten_question" in locals()
                     else question,
             
-                    "agent_selected": agent_type
-                    if "agent_type" in locals()
+                    "agent_selected": intent
+                    if "intent" in locals()
                     else None,
             
                     "pipeline": None,

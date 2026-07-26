@@ -69,37 +69,30 @@ Use pipeline="out_of_scope" when the question is unrelated to IPL.
 
 Return ONLY valid JSON.
 
-For SQL
+SQL example
 
-{
+{{
     "pipeline":"sql",
     "intent":"batting"
-}
+}}
 
-or
+RAG example
 
-{
-    "pipeline":"sql",
-    "intent":"venue"
-}
-
-For RAG
-
-{
+{{
     "pipeline":"rag"
-}
+}}
 
-For Tavily
+Tavily example
 
-{
+{{
     "pipeline":"tavily"
-}
+}}
 
-For Out Of Scope
+Out of scope example
 
-{
+{{
     "pipeline":"out_of_scope"
-}
+}}
 
 Question
 
@@ -125,7 +118,13 @@ def llm_router(llm, question):
 
     try:
 
-        route = json.loads(response.content)
+        content = response.content.strip()
+
+        # Remove markdown if model returns ```json
+        content = content.replace("```json", "")
+        content = content.replace("```", "")
+        
+        route = json.loads(content)
 
     except Exception:
 
