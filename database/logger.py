@@ -74,6 +74,32 @@ def save_tavily_log(
         .execute()
     )
 
+
+import math
+import numpy as np
+
+
+def clean(value):
+
+    if value is None:
+        return None
+
+    if isinstance(value, (float, np.floating)):
+
+        if math.isnan(value):
+            return None
+
+        return float(value)
+
+    if isinstance(value, np.integer):
+        return int(value)
+
+    if isinstance(value, np.bool_):
+        return bool(value)
+
+    return value
+
+    
 def save_evaluation_log(
 
     query_log_id,
@@ -96,33 +122,33 @@ def save_evaluation_log(
 
     intent,
 
-    confidence
+    confidence=None
 
 ):
 
     supabase.table("evaluation_logs").insert({
 
-        "query_log_id": query_log_id,
+        "query_log_id": clean(query_log_id),
 
-        "pipeline": pipeline,
-
-        "status": status,
-
-        "sql_used": sql_used,
-
-        "rag_used": rag_used,
-
-        "tavily_used": tavily_used,
-
-        "generated_sql": generated_sql,
-
-        "llm_calls": llm_calls,
-
-        "response_time": response_time,
-
-        "intent": intent,
-
-        "confidence": confidence
+        "pipeline": clean(pipeline),
+    
+        "status": clean(status),
+    
+        "sql_used": clean(sql_used),
+    
+        "rag_used": clean(rag_used),
+    
+        "tavily_used": clean(tavily_used),
+    
+        "generated_sql": clean(generated_sql),
+    
+        "llm_calls": clean(llm_calls),
+    
+        "response_time": clean(response_time),
+    
+        "intent": clean(intent),
+    
+        "confidence": clean(confidence)
 
     }).execute()
 
