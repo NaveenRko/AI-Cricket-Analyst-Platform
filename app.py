@@ -328,7 +328,7 @@ if st.button("Analyze"):
                 
                     intent=intent,
                 
-                    confidence=None
+                    confidence=classifier_confidence
                 )
                                             
             except Exception as e:

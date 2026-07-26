@@ -96,7 +96,7 @@ def save_evaluation_log(
 
     intent,
 
-    confidence=None
+    confidence
 
 ):
 
