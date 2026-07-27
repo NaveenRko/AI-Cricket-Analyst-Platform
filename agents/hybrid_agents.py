@@ -21,7 +21,7 @@ def get_hybrid_answer(
 
     sql_df = sql_result["result_df"]
 
-    if sql_df is not None and not sql_df.empty():
+    if sql_df is not None and not sql_df.empty:
 
         return {
 
