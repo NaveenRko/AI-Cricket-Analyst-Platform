@@ -23,6 +23,7 @@ from agents.matchup_agent import get_matchup_result
 from agents.rag_agent import get_rag_answer 
 from agents.hybrid_agents import get_hybrid_answer
 from agents.rag_hybrid import get_rag_hybrid_answer
+from agents.search_orchestrator import get_tavily_answer
 
 from memory.memory import memory
 from memory.memory_agent import rewrite_question
@@ -187,12 +188,12 @@ if st.button("Analyze"):
                     "matchup": get_matchup_result,
                 
                 }
-                sql_agent = SQL_AGENT_MAP.get(intent)
-
-                if sql_agent is None:
-                    raise ValueError(f"Unknown SQL intent: {intent}")
 
                 if pipeline == "sql":
+                    sql_agent = SQL_AGENT_MAP.get(intent)
+
+                    if sql_agent is None:
+                        raise ValueError(f"Unknown SQL intent: {intent}")
                 
                     result = get_hybrid_answer(
                 
@@ -339,7 +340,7 @@ if st.button("Analyze"):
                 
                     intent=intent,
                 
-                    confidence=classifier_confidence
+                    confidence=confidence
                 )
                                             
             except Exception as e:
@@ -363,7 +364,7 @@ if st.button("Analyze"):
                     if "intent" in locals()
                     else None,
             
-                    "pipeline": None,
+                    "pipeline": pipeline if "pipeline" in locals() else None,
             
                     "status": "error",
             

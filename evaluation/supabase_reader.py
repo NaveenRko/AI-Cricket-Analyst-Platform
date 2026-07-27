@@ -103,58 +103,46 @@ def get_dashboard_data():
 
     tavily_logs = get_tavily_logs()
 
-    # -----------------------------
+    feedback_logs = get_feedback_logs()
+
     # Query + Evaluation
-    # -----------------------------
 
     df = query_logs.merge(
-
         evaluation_logs,
-
         left_on="id",
-
         right_on="query_log_id",
-
         how="left",
-
         suffixes=("", "_eval")
-
     )
 
-    # -----------------------------
-    # SQL Logs
-    # -----------------------------
+    # SQL
 
     df = df.merge(
-
         sql_logs,
-
         left_on="id",
-
         right_on="query_log_id",
-
         how="left",
-
         suffixes=("", "_sql")
-
     )
 
-    # -----------------------------
-    # Tavily Logs
-    # -----------------------------
+    # Tavily
 
     df = df.merge(
-
         tavily_logs,
-
         left_on="id",
-
         right_on="query_log_id",
-
         how="left",
-
         suffixes=("", "_tavily")
+    )
 
+    # Feedback
+
+    df = df.merge(
+        feedback_logs,
+        left_on="id",
+        right_on="query_log_id",
+        how="left",
+        suffixes=("", "_feedback")
     )
 
     return df
@@ -169,19 +157,3 @@ def get_feedback_logs():
     )
 
     return _to_dataframe(response)
-
-feedback_logs = get_feedback_logs()
-
-df = df.merge(
-
-    feedback_logs,
-
-    left_on="id",
-
-    right_on="query_log_id",
-
-    how="left",
-
-    suffixes=("", "_feedback")
-
-)
