@@ -23,7 +23,7 @@ from agents.matchup_agent import get_matchup_result
 from agents.rag_agent import get_rag_answer 
 from agents.hybrid_agents import get_hybrid_answer
 from agents.rag_hybrid import get_rag_hybrid_answer
-from agents.search_orchestrator import get_tavily_answer
+from agents.search_orchestrator import search_orchestrator
 
 from memory.memory import memory
 from memory.memory_agent import rewrite_question
@@ -217,7 +217,7 @@ if st.button("Analyze"):
                 
                 elif pipeline == "tavily":
                 
-                    result = get_tavily_answer(
+                    result = search_orchestrator(
                 
                         llm,
                 

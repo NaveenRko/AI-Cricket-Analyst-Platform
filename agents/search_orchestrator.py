@@ -2,7 +2,7 @@ from agents.rag_agent import get_rag_answer
 from agents.tavily_agent import tavily_search
 
 
-def get_tavily_answer(llm, question):
+def search_orchestrator(llm, question):
 
     rag = get_rag_answer(llm, question)
 
