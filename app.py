@@ -207,6 +207,7 @@ if st.button("Analyze"):
                         sql_agent
                 
                     )
+                    st.code(result["sql_error"])
                 
                 elif pipeline == "rag":
                 
@@ -346,44 +347,63 @@ if st.button("Analyze"):
                     confidence=confidence
                 )
                                             
+            # except Exception as e:
+            
+            #     response_time = round(
+            #         time.time() - start_time,
+            #         2
+            #     ) if "start_time" in locals() else None
+            
+            #     from database.logger import save_query
+            
+            #     save_query({
+            
+            #         "question": question if "question" in locals() else None,
+            
+            #         "rewritten_question": rewritten_question
+            #         if "rewritten_question" in locals()
+            #         else question,
+            
+            #         "agent_selected": intent
+            #         if "intent" in locals()
+            #         else None,
+            
+            #         "pipeline": pipeline if "pipeline" in locals() else None,
+            
+            #         "status": "error",
+            
+            #         "error_message": str(e),
+            
+            #         "model_used": "llama-3.3-70b-versatile",
+            
+            #         "final_answer": None,
+            
+            #         "response_time": response_time
+            
+            #     })
+            
+            #     st.error(
+            #         f"Error: {str(e)}"
+            #     )
+            import traceback
+
             except Exception as e:
             
-                response_time = round(
-                    time.time() - start_time,
-                    2
-                ) if "start_time" in locals() else None
+                print(traceback.format_exc())
             
-                from database.logger import save_query
+                return {
             
-                save_query({
+                    "generated_sql": sql,
             
-                    "question": question if "question" in locals() else None,
+                    "result_df": None,
             
-                    "rewritten_question": rewritten_question
-                    if "rewritten_question" in locals()
-                    else question,
+                    "result_json": [],
             
-                    "agent_selected": intent
-                    if "intent" in locals()
-                    else None,
+                    "result_text": "No statistics available.",
             
-                    "pipeline": pipeline if "pipeline" in locals() else None,
+                    "error": traceback.format_exc()
             
-                    "status": "error",
-            
-                    "error_message": str(e),
-            
-                    "model_used": "llama-3.3-70b-versatile",
-            
-                    "final_answer": None,
-            
-                    "response_time": response_time
-            
-                })
-            
-                st.error(
-                    f"Error: {str(e)}"
-                )
+                }
 
 # ===================================
 # Display latest answer
