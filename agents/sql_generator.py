@@ -30,14 +30,14 @@ def generate_and_execute_sql(
 
     chain = prompt | llm
     
-    print("STEP 1")
+
     response = chain.invoke(
         {
             "schema": schema,
             "question": question
         }
     )
-    print("STEP 2")
+   
     sql = response.content.strip()
 
     sql = sql.replace("```sql", "")
@@ -65,16 +65,12 @@ def generate_and_execute_sql(
         }
 
     try:
-        print("STEP 3")
+        
         conn = duckdb.connect(DATABASE)
-        print("STEP 4")
+        
         df = conn.execute(sql).fetchdf()
-        print("STEP 5")
+        
         conn.close()
-        print("STEP 6")
-
-        print(type(df))
-        print(df.empty)
 
         return {
 
