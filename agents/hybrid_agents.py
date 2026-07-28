@@ -20,6 +20,18 @@ def get_hybrid_answer(
     )
 
     sql_df = sql_result["result_df"]
+    import streamlit as st
+
+    st.write(type(sql_df))
+    st.write(dir(sql_df))
+    st.write(sql_df)
+    
+    stop_here = sql_df.empty
+    
+    st.write(type(stop_here))
+    st.write(stop_here)
+    
+    st.stop()
 
     if sql_df is not None and not sql_df.empty:
 
