@@ -230,7 +230,7 @@ if st.button("Analyze"):
 
                     result = {
                 
-                        "answer":"I'm an IPL specialist AI analyst.",
+                        "answer":"I'm an IPL specialist AI analyst.Ask IPL related questions",
                 
                         "generated_sql":None,
                 
