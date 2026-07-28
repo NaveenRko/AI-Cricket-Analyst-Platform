@@ -205,14 +205,6 @@ if st.button("Analyze"):
                         sql_agent
                 
                     )
-
-                    st.write("RESULT TYPE")
-                    st.write(type(result))
-                    
-                    st.write("RESULT")
-                    st.write(result)
-                    
-                    st.stop()
                 
                 elif pipeline == "rag":
                 
