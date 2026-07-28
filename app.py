@@ -194,6 +194,9 @@ if st.button("Analyze"):
 
                     if sql_agent is None:
                         raise ValueError(f"Unknown SQL intent: {intent}")
+
+                    st.write(type(sql_agent))
+                    st.write(sql_agent)
                 
                     result = get_hybrid_answer(
                 
