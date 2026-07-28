@@ -208,8 +208,7 @@ if st.button("Analyze"):
                         sql_agent
                 
                     )
-                    if result.get("sql_error"):
-                        st.code(result["sql_error"])
+                    st.write(result)
                 
                 elif pipeline == "rag":
                 
@@ -382,7 +381,7 @@ if st.button("Analyze"):
                 
                 })
                 
-                st.error(traceback.format_exc())
+                st.code(traceback.format_exc())
 
 # ===================================
 # Display latest answer

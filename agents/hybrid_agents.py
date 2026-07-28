@@ -19,7 +19,15 @@ def get_hybrid_answer(
 
     )
 
+    #sql_df = sql_result["result_df"]
+    import streamlit as st
+
     sql_df = sql_result["result_df"]
+    
+    st.write("sql_result type:", type(sql_result))
+    st.write("sql_df type:", type(sql_df))
+    st.write(sql_df)
+    st.write(sql_result)
 
     if sql_df is not None and not sql_df.empty:
 
