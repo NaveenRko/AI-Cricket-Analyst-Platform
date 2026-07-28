@@ -2,38 +2,44 @@ from database.supabase_client import supabase
 import math
 import numpy as np
 
+import math
+import numpy as np
+
 def sanitize(value):
 
     if value is None:
         return None
 
-    if isinstance(value, dict):
-        return {
-            k: sanitize(v)
-            for k, v in value.items()
-        }
-
-    if isinstance(value, list):
-        return [
-            sanitize(v)
-            for v in value
-        ]
-
     if isinstance(value, np.integer):
         return int(value)
 
     if isinstance(value, np.floating):
-        if np.isnan(value):
-            return None
-        return float(value)
 
-    if isinstance(value, float):
+        value = float(value)
+
         if math.isnan(value):
             return None
+
+        if math.isinf(value):
+            return None
+
         return value
 
-    if isinstance(value, np.bool_):
-        return bool(value)
+    if isinstance(value, float):
+
+        if math.isnan(value):
+            return None
+
+        if math.isinf(value):
+            return None
+
+        return value
+
+    if isinstance(value, list):
+        return [sanitize(v) for v in value]
+
+    if isinstance(value, dict):
+        return {k: sanitize(v) for k, v in value.items()}
 
     return value
 
