@@ -39,6 +39,7 @@ import time
 
 import numpy as np
 import math
+import traceback
 
 from database.logger import save_feedback_log
 
@@ -385,8 +386,6 @@ if st.button("Analyze"):
             #     st.error(
             #         f"Error: {str(e)}"
             #     )
-            import traceback
-
             except Exception as e:
             
                 print(traceback.format_exc())
