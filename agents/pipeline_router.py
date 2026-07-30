@@ -93,21 +93,21 @@ Return ONLY JSON.
 
 Examples
 
-{
+{{
     "pipeline":"sql"
-}
+}}
 
-{
+{{
     "pipeline":"rag"
-}
+}}
 
-{
+{{
     "pipeline":"tavily"
-}
+}}
 
-{
+{{
     "pipeline":"out_of_scope"
-}
+}}
 
 Question
 

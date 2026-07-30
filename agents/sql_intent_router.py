@@ -130,30 +130,29 @@ Team vs team
 Return ONLY JSON.
 
 Examples
-
-{
+{{
     "intent":"batting"
-}
+}}
 
-{
+{{
     "intent":"bowling"
-}
+}}
 
-{
+{{
     "intent":"team"
-}
+}}
 
-{
+{{
     "intent":"venue"
-}
+}}
 
-{
+{{
     "intent":"season"
-}
+}}
 
-{
+{{
     "intent":"matchup"
-}
+}}
 
 Question
 
