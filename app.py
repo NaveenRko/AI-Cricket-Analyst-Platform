@@ -23,6 +23,8 @@ from agents.matchup_agent import get_matchup_result
 from agents.rag_agent import get_rag_answer 
 from agents.hybrid_agents import get_hybrid_answer
 from agents.rag_hybrid import get_rag_hybrid_answer
+from agents.pipeline_router import pipeline_router
+from agents.sql_intent_router import sql_intent_router
 from agents.search_orchestrator import search_orchestrator
 
 from memory.memory import memory
@@ -137,115 +139,110 @@ if st.button("Analyze"):
                 # ---------------------
                 # decide agent with calssifier
                 # agent_type = predict_intent(rewritten_question)
-                prediction = predict_intent(rewritten_question)
+                # prediction = predict_intent(rewritten_question)
+                # st.write("Prediction")
+                # st.write(prediction)
 
-                classifier_confidence = prediction["confidence"]
-                confidence = classifier_confidence
+                # classifier_confidence = prediction["confidence"]
+                # confidence = classifier_confidence
 
-                if isinstance(confidence, np.floating):
-                    confidence = float(confidence)
+                # if isinstance(confidence, np.floating):
+                #     confidence = float(confidence)
                 
-                if isinstance(confidence, float) and math.isnan(confidence):
-                    confidence = None
+                # if isinstance(confidence, float) and math.isnan(confidence):
+                #     confidence = None
                 
-                if classifier_confidence >= 0.70:
+                # if classifier_confidence >= 0.70:
                 
-                    pipeline = "sql"
+                #     pipeline = "sql"
                 
-                    intent = prediction["intent"]
+                #     intent = prediction["intent"]
                 
-                    router_used = False
+                #     router_used = False
                 
-                    router_usage = None
+                #     router_usage = None
                 
-                else:
+                # else:
                 
-                    from agents.router import llm_router
+                #     from agents.router import llm_router
                 
-                    route = llm_router(
+                #     route = llm_router(
+                #         llm,
+                #         rewritten_question
+                #     )
+                
+                #     pipeline = route["pipeline"]
+                
+                #     intent = route.get("intent")
+                
+                #     router_used = True
+                
+                #     router_usage = route["usage"]
+
+                # SQL_AGENT_MAP = {
+                #     "batting": get_batting_result,
+
+                #     "bowling": get_bowling_result,
+                
+                #     "venue": get_venue_result,
+                
+                #     "season": get_season_result,
+                
+                #     "team": get_team_result,
+                
+                #     "matchup": get_matchup_result,
+                
+                # }
+
+                route = pipeline_router(
+                    llm,
+                    rewritten_question
+                )
+                
+                pipeline = route["pipeline"]
+                
+                if pipeline == "sql":
+                
+                    sql_route = sql_intent_router(
                         llm,
                         rewritten_question
                     )
                 
-                    pipeline = route["pipeline"]
+                    intent = sql_route["intent"]
                 
-                    intent = route.get("intent")
-                
-                    router_used = True
-                
-                    router_usage = route["usage"]
-
-                SQL_AGENT_MAP = {
-                    "batting": get_batting_result,
-
-                    "bowling": get_bowling_result,
-                
-                    "venue": get_venue_result,
-                
-                    "season": get_season_result,
-                
-                    "team": get_team_result,
-                
-                    "matchup": get_matchup_result,
-                
-                }
-
-                if pipeline == "sql":
-                    sql_agent = SQL_AGENT_MAP.get(intent)
-
-                    if sql_agent is None:
-                        raise ValueError(f"Unknown SQL intent: {intent}")
+                    sql_agent = SQL_AGENT_MAP[intent]
                 
                     result = get_hybrid_answer(
-                
                         llm,
-                
                         rewritten_question,
-                
                         sql_agent
-                
                     )
                 
                 elif pipeline == "rag":
                 
                     result = get_rag_hybrid_answer(
-                
                         llm,
-                
                         rewritten_question
-                
                     )
                 
                 elif pipeline == "tavily":
                 
                     result = search_orchestrator(
-                
                         llm,
-                
                         rewritten_question
-                
                     )
                 
                 else:
-
+                
                     result = {
-                
-                        "answer":"I'm an IPL specialist AI analyst.Ask IPL related questions",
-                
-                        "generated_sql":None,
-                
-                        "sql_result":None,
-                
-                        "sql_error":None,
-                
-                        "rag_docs":[],
-                
-                        "tavily_sources":[],
-                
-                        "search_used":"out_of_scope"
-                
+                        "answer": "I'm an IPL specialist AI analyst. Please ask IPL-related questions.",
+                        "generated_sql": None,
+                        "sql_result": None,
+                        "sql_error": None,
+                        "rag_docs": [],
+                        "tavily_sources": [],
+                        "search_used": "out_of_scope"
                     }
-
                 final_answer = result["answer"]
             
                 # Save conversation (Memory)
