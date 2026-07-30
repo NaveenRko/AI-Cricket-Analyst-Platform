@@ -200,6 +200,8 @@ if st.button("Analyze"):
                 )
                 
                 pipeline = route["pipeline"]
+                intent = None
+                confidence = None
                 
                 if pipeline == "sql":
                 
@@ -276,7 +278,7 @@ if st.button("Analyze"):
                 
                     "rewritten_question": rewritten_question,
                 
-                    "agent_selected": intent,
+                    "agent_selected": intent if intent else pipeline,
                 
                     "pipeline": pipeline,
                 
@@ -338,7 +340,7 @@ if st.button("Analyze"):
                 
                     intent=intent,
                 
-                    confidence=confidence
+                    confidence=None
                 )
                                             
             except Exception as e:
