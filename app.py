@@ -179,20 +179,20 @@ if st.button("Analyze"):
                 
                 #     router_usage = route["usage"]
 
-                # SQL_AGENT_MAP = {
-                #     "batting": get_batting_result,
+                SQL_AGENT_MAP = {
+                    "batting": get_batting_result,
 
-                #     "bowling": get_bowling_result,
+                    "bowling": get_bowling_result,
                 
-                #     "venue": get_venue_result,
+                    "venue": get_venue_result,
                 
-                #     "season": get_season_result,
+                    "season": get_season_result,
                 
-                #     "team": get_team_result,
+                    "team": get_team_result,
                 
-                #     "matchup": get_matchup_result,
+                    "matchup": get_matchup_result,
                 
-                # }
+                }
 
                 route = pipeline_router(
                     llm,
