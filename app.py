@@ -119,7 +119,8 @@ if st.button("Analyze"):
                     word in question.lower()
                     for word in ["he","his","him","she",
                         "her","they","them","that player",
-                        "that team","same season","previous"
+                        "that team","same season","previous",
+                                 "venue","player"
                     ]
                 )
                 
