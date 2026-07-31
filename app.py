@@ -138,50 +138,13 @@ if st.button("Analyze"):
                                 
                 # ---------------------
                 # decide agent with calssifier
-                # agent_type = predict_intent(rewritten_question)
-                # prediction = predict_intent(rewritten_question)
-                # st.write("Prediction")
-                # st.write(prediction)
-
-                # classifier_confidence = prediction["confidence"]
-                # confidence = classifier_confidence
-
-                # if isinstance(confidence, np.floating):
-                #     confidence = float(confidence)
                 
-                # if isinstance(confidence, float) and math.isnan(confidence):
-                #     confidence = None
+                from IntentClassifier.predict import predict_intent
                 
-                # if classifier_confidence >= 0.70:
-                
-                #     pipeline = "sql"
-                
-                #     intent = prediction["intent"]
-                
-                #     router_used = False
-                
-                #     router_usage = None
-                
-                # else:
-                
-                #     from agents.router import llm_router
-                
-                #     route = llm_router(
-                #         llm,
-                #         rewritten_question
-                #     )
-                
-                #     pipeline = route["pipeline"]
-                
-                #     intent = route.get("intent")
-                
-                #     router_used = True
-                
-                #     router_usage = route["usage"]
-
                 SQL_AGENT_MAP = {
+                
                     "batting": get_batting_result,
-
+                
                     "bowling": get_bowling_result,
                 
                     "venue": get_venue_result,
@@ -190,61 +153,192 @@ if st.button("Analyze"):
                 
                     "team": get_team_result,
                 
-                    "matchup": get_matchup_result,
+                    "matchup": get_matchup_result
                 
                 }
-
-                route = pipeline_router(
-                    llm,
-                    rewritten_question
-                )
                 
-                pipeline = route["pipeline"]
-                intent = None
-                confidence = None
+                prediction = predict_intent(rewritten_question)
                 
-                if pipeline == "sql":
+                intent = prediction["intent"]
                 
-                    sql_route = sql_intent_router(
+                confidence = prediction["confidence"]
+                
+                # -----------------------------
+                # HIGH CONFIDENCE
+                # -----------------------------
+                
+                if confidence >= 0.80:
+                
+                    # -----------------
+                    # SQL intents
+                    # -----------------
+                
+                    if intent in SQL_AGENT_MAP:
+                
+                        pipeline = "sql"
+                
+                        sql_agent = SQL_AGENT_MAP[intent]
+                
+                        result = get_hybrid_answer(
+                
+                            llm,
+                
+                            rewritten_question,
+                
+                            sql_agent
+                
+                        )
+                
+                    # -----------------
+                    # RAG
+                    # -----------------
+                
+                    elif intent == "rag":
+                
+                        pipeline = "rag"
+                
+                        result = get_rag_hybrid_answer(
+                
+                            llm,
+                
+                            rewritten_question
+                
+                        )
+                
+                    # -----------------
+                    # Out of scope
+                    # -----------------
+                
+                    elif intent == "out_of_scope":
+                
+                        pipeline = "out_of_scope"
+                
+                        result = {
+                
+                            "answer": "I'm an IPL specialist AI analyst. Please ask IPL-related questions.",
+                
+                            "generated_sql": None,
+                
+                            "sql_result": None,
+                
+                            "sql_error": None,
+                
+                            "rag_docs": [],
+                
+                            "tavily_sources": [],
+                
+                            "search_used": "out_of_scope",
+                
+                            "llm_calls": 0
+                
+                        }
+                
+                    # -----------------
+                    # Unexpected label
+                    # -----------------
+                
+                    else:
+                
+                        route = pipeline_router(
+                
+                            llm,
+                
+                            rewritten_question
+                
+                        )
+                
+                        pipeline = route["pipeline"]
+                
+                        intent = None
+                
+                # -----------------------------
+                # LOW CONFIDENCE
+                # -----------------------------
+                
+                if confidence < 0.80:
+                
+                    route = pipeline_router(
+                
                         llm,
+                
                         rewritten_question
+                
                     )
                 
-                    intent = sql_route["intent"]
+                    pipeline = route["pipeline"]
                 
-                    sql_agent = SQL_AGENT_MAP[intent]
+                    if pipeline == "sql":
                 
-                    result = get_hybrid_answer(
-                        llm,
-                        rewritten_question,
-                        sql_agent
-                    )
+                        sql_route = sql_intent_router(
                 
-                elif pipeline == "rag":
+                            llm,
                 
-                    result = get_rag_hybrid_answer(
-                        llm,
-                        rewritten_question
-                    )
+                            rewritten_question
                 
-                elif pipeline == "tavily":
+                        )
                 
-                    result = search_orchestrator(
-                        llm,
-                        rewritten_question
-                    )
+                        intent = sql_route["intent"]
                 
-                else:
+                        sql_agent = SQL_AGENT_MAP[intent]
                 
-                    result = {
-                        "answer": "I'm an IPL specialist AI analyst. Please ask IPL-related questions.",
-                        "generated_sql": None,
-                        "sql_result": None,
-                        "sql_error": None,
-                        "rag_docs": [],
-                        "tavily_sources": [],
-                        "search_used": "out_of_scope"
-                    }
+                        result = get_hybrid_answer(
+                
+                            llm,
+                
+                            rewritten_question,
+                
+                            sql_agent
+                
+                        )
+                
+                    elif pipeline == "rag":
+                
+                        intent = "rag"
+                
+                        result = get_rag_hybrid_answer(
+                
+                            llm,
+                
+                            rewritten_question
+                
+                        )
+                
+                    elif pipeline == "tavily":
+                
+                        intent = "tavily"
+                
+                        result = search_orchestrator(
+                
+                            llm,
+                
+                            rewritten_question
+                
+                        )
+                
+                    else:
+                
+                        intent = "out_of_scope"
+                
+                        result = {
+                
+                            "answer": "I'm an IPL specialist AI analyst. Please ask IPL-related questions.",
+                
+                            "generated_sql": None,
+                
+                            "sql_result": None,
+                
+                            "sql_error": None,
+                
+                            "rag_docs": [],
+                
+                            "tavily_sources": [],
+                
+                            "search_used": "out_of_scope",
+                
+                            "llm_calls": 0
+                
+                        }
+                
                 final_answer = result["answer"]
             
                 # Save conversation (Memory)
@@ -340,7 +434,7 @@ if st.button("Analyze"):
                 
                     intent=intent,
                 
-                    confidence=None
+                    confidence=confidence
                 )
                                             
             except Exception as e:
