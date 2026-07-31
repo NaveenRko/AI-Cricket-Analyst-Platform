@@ -139,7 +139,7 @@ if st.button("Analyze"):
                 # ---------------------
                 # decide agent with calssifier
                 
-                from IntentClassifier.predict import predict_intent
+                from IntentClassifier.predict_intent import predict_intent
                 
                 SQL_AGENT_MAP = {
                 
