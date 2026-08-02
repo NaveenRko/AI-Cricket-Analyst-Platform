@@ -9,13 +9,26 @@ client = TavilyClient(
 
 def tavily_search(question):
 
+    search_query = f"""
+You are searching for information about the Indian Premier League (IPL).
+
+User question:
+{question}
+
+Interpret all player, team, season, match and performance references
+in the context of the IPL unless the question explicitly specifies
+another cricket competition.
+
+Return information relevant to IPL cricket only.
+"""
+
     response = client.search(
 
-        query=question,
+        query=search_query,
 
         search_depth="advanced",
 
-        max_results=5
+        max_results=3
 
     )
 
