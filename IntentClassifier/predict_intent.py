@@ -30,7 +30,7 @@ def predict_intent(question):
 if __name__ == "__main__":
 
     result = predict_intent(
-        "Which team has the best record in must-win playoff games?"
+        "Which batsman deserves more recognition than he gets?"
     )
 
     print(result)

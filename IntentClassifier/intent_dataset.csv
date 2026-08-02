@@ -59,6 +59,10 @@ Who is the youngest batsman to score a century in IPL?,batting
 What was Yashasvi Jaiswal's strike rate in IPL 2023?,batting
 Who has scored the most runs in a losing cause?,batting
 What is Quinton de Kock's batting average in IPL?,batting
+Who has scored the most runs among all-rounders in IPL history?,batting
+What is the batting average of the leading run scorer among wicketkeepers?,batting
+Who has the highest strike rate among top-order batsmen?,batting
+Which batsman has scored the most runs in successful chases?,batting
 Who took the most wickets in IPL 2020?,bowling
 What is Jasprit Bumrah's economy rate in IPL?,bowling
 Who has the best bowling figures in a single match?,bowling
@@ -119,6 +123,10 @@ How many wickets did Noor Ahmad take in IPL 2024?,bowling
 Who has the best strike rate among part-time bowlers?,bowling
 What is Jofra Archer's economy rate in IPL?,bowling
 Who has taken the most catches off his own bowling in IPL?,bowling
+Who has taken the most wickets in IPL history?,bowling
+Who has the best bowling economy this season?,bowling
+Which bowler has the most five-wicket hauls?,bowling
+Which bowler has the best strike rate this IPL season?,bowling
 Which team won the most matches in IPL 2021?,team
 How many matches did CSK win in IPL 2023?,team
 Which team has the best win percentage in IPL history?,team
@@ -179,6 +187,10 @@ Which team scored the fewest runs in IPL 2021?,team
 How many matches did GT win in the league stage of IPL 2023?,team
 Which team has the best record in low-scoring matches?,team
 What is CSK's overall performance across all IPL seasons?,team
+Which team has the highest win percentage in IPL history?,team
+Which team has won the most matches overall?,team
+Which team has the best net run rate this season?,team
+Which franchise has won the most IPL titles?,team
 Which venue has the highest average score in IPL?,venue
 What is the average score at Wankhede Stadium?,venue
 Which team has won the most matches at Eden Gardens?,venue
@@ -239,6 +251,9 @@ What is the bowling economy of spinners at Chepauk?,venue
 Which venue has the highest number of centuries scored?,venue
 What is the average first-innings score across all IPL venues?,venue
 Which venue has the best home advantage for the host team?,venue
+Which venue has hosted the most matches in IPL history?,venue
+Which stadium has the highest average first-innings score?,venue
+Which venue has the best record for teams defending a total?,venue
 Who won IPL 2016?,season
 Who was the runner-up in IPL 2019?,season
 How many teams played in IPL 2011?,season
@@ -299,6 +314,9 @@ Who was declared Player of the Series in IPL 2018?,season
 What was the qualifying scenario for CSK in IPL 2023?,season
 Who won Qualifier 1 in IPL 2022?,season
 Which team had the best net run rate across IPL 2021?,season
+Which IPL season had the most centuries scored?,season
+Which IPL season had the highest average team score?,season
+Which season had the most Super Over finishes?,season
 Virat Kohli vs Jasprit Bumrah head to head,matchup
 How does Rohit Sharma perform against Rashid Khan?,matchup
 CSK vs MI head to head record,matchup
@@ -359,6 +377,9 @@ How does Jos Buttler perform against Bumrah?,matchup
 What is the head-to-head record between PBKS and DC?,matchup
 Which bowler has dismissed Rohit Sharma the most times?,matchup
 MI vs GT head-to-head record,matchup
+"Who has scored more runs against Bumrah, Kohli or Rohit?",matchup
+Which bowler has dismissed Kohli the most times?,matchup
+"Who has a better strike rate against pace, Rohit or Warner?",matchup
 Who is Virat Kohli?,rag
 Tell me about MS Dhoni's career.,rag
 Who is Shane Warne?,rag
@@ -478,10 +499,48 @@ Which players are famous for their all-round abilities?,tavily
 Who is the best all-rounder in IPL based on overall reputation?,tavily
 Which IPL player is known as the best all-rounder?,tavily
 Who are recent regular players in each format and altogether,tavily
-Who were the umpires for 31st march 2018,tavily
-Who are the commentators in first innings of match played on 10th april 2024,tavily
-Oldest player in ipl,tavily
-who were the commentators of the last season,tavily
+Who were the umpires for 31st March 2018?,tavily
+Who are the commentators in the first innings of the match played on 10th April 2024?,tavily
+Oldest player in IPL,tavily
+Who were the commentators of the last season?,tavily
+Who is the best batsman in IPL?,tavily
+Who is the greatest batsman of all time in IPL?,tavily
+Who is the most complete batsman in IPL?,tavily
+Who is the most valuable batsman this season?,tavily
+Who is the best finisher in IPL?,tavily
+Who is the most exciting batsman to watch in IPL?,tavily
+Who has the best batting technique in IPL?,tavily
+Which batsman deserves more recognition than he gets?,tavily
+Who is the best bowler in IPL?,tavily
+Who is the greatest bowler in IPL history?,tavily
+Who is the most feared bowler in IPL?,tavily
+Who is the most valuable bowler in IPL?,tavily
+Who is the best death-overs bowler according to experts?,tavily
+Who is the most complete bowling attack in IPL?,tavily
+Which bowler has the best temperament under pressure?,tavily
+Which is the greatest IPL team of all time?,tavily
+Which is the most successful IPL franchise ever?,tavily
+Which team has the best fanbase in IPL?,tavily
+Which is the most balanced IPL squad?,tavily
+Which team is considered the strongest this season?,tavily
+Which franchise is the most iconic in IPL history?,tavily
+Which venue is the most iconic in IPL history?,tavily
+Which stadium has the best atmosphere in IPL?,tavily
+Which venue do players enjoy playing at the most?,tavily
+Which stadium has the most passionate crowd?,tavily
+Which was the best IPL season ever?,tavily
+Which IPL season is considered the most exciting?,tavily
+Who was the standout player of the best IPL season?,tavily
+Which season had the most memorable finish?,tavily
+"Who is better, Kohli or Rohit?",tavily
+Who would win in a battle between Bumrah and Kohli?,tavily
+"Who is a tougher opponent, Rashid Khan or Chahal?",tavily
+"Who has the edge in reputation, Dhoni or Kohli?",tavily
+Who is the most valuable player in IPL 2026?,tavily
+Who deserves the Most Valuable Player award this season?,tavily
+Who is the emerging player of IPL 2026?,tavily
+Who is the most promising young talent in IPL?,tavily
+Which uncapped player impressed experts the most this season?,tavily
 What is the capital of India?,out_of_scope
 Write Python code to sort a list.,out_of_scope
 What is machine learning?,out_of_scope
