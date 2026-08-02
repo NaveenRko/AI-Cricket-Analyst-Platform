@@ -168,7 +168,7 @@ if st.button("Analyze"):
                 # HIGH CONFIDENCE
                 # -----------------------------
                 
-                if confidence >= 0.80:
+                if confidence >= 0.97:
                 
                     # -----------------
                     # SQL intents
@@ -269,7 +269,7 @@ if st.button("Analyze"):
                 # LOW CONFIDENCE
                 # -----------------------------
                 
-                if confidence < 0.80:
+                if confidence < 0.97:
                 
                     route = pipeline_router(
                 
