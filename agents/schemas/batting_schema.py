@@ -227,9 +227,6 @@ LOWER(TRIM(column))
 
 for string comparison.
 
-Whenever season is requested,
-JOIN matches using match_id.
-
 Whenever a player is requested,
 JOIN players.
 
@@ -253,6 +250,81 @@ AVG
 COUNT
 MIN
 MAX
+
+==================================================
+SEASON FILTER RULE
+==================================================
+
+IMPORTANT
+
+Choose the table based on the level of the question.
+
+If the question asks for season-level player statistics
+such as:
+
+- runs in IPL 2026
+- highest runs in IPL 2026
+- batting average in IPL 2024
+- highest strike rate in IPL 2025
+- most sixes in IPL 2026
+
+use:
+
+player_season_stats
+
+and filter directly:
+
+WHERE ps.season = 2026
+
+DO NOT JOIN matches merely to filter the season.
+
+player_season_stats already contains the season.
+
+Only JOIN matches when the question requires match-level
+information such as:
+
+- venue
+- city
+- match date
+- winner
+- toss winner
+- toss decision
+- player of the match
+
+==================================================
+TABLE GRAIN / DUPLICATE PREVENTION
+==================================================
+
+IMPORTANT
+
+Do NOT join aggregate tables with match-level tables
+unless the question explicitly requires it.
+
+Understand the granularity of every table.
+
+player_season_stats:
+One row per player per season.
+
+player_match_stats:
+One row per player per match.
+
+batting_stats:
+Career/overall aggregate statistics.
+
+matches:
+One row per match.
+
+If player_season_stats is sufficient to answer the question,
+DO NOT join player_match_stats.
+
+If player_match_stats is sufficient,
+DO NOT additionally join batting_stats.
+
+Never SUM an already aggregated player-season value after
+joining it to multiple match-level rows.
+
+Never create joins that multiply rows before SUM, AVG or COUNT.
+
 
 ==================================================
 EXAMPLES

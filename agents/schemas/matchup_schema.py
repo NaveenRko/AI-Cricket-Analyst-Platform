@@ -204,6 +204,41 @@ MIN
 MAX
 
 ==================================================
+TABLE GRAIN / DUPLICATE PREVENTION
+==================================================
+
+IMPORTANT
+
+Do NOT join aggregate tables with match-level tables
+unless the question explicitly requires it.
+
+Understand the granularity of every table.
+
+player_season_stats:
+One row per player per season.
+
+player_match_stats:
+One row per player per match.
+
+batting_stats:
+Career/overall aggregate statistics.
+
+matches:
+One row per match.
+
+If player_season_stats is sufficient to answer the question,
+DO NOT join player_match_stats.
+
+If player_match_stats is sufficient,
+DO NOT additionally join batting_stats.
+
+Never SUM an already aggregated player-season value after
+joining it to multiple match-level rows.
+
+Never create joins that multiply rows before SUM, AVG or COUNT.
+
+
+==================================================
 EXAMPLES
 ==================================================
 

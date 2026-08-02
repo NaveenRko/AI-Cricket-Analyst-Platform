@@ -10,7 +10,13 @@ from xgboost import XGBClassifier
 import joblib
 
 #load the intent dataset
-df = pd.read_csv("intent_dataset.csv")
+from pathlib import Path
+import pandas as pd
+
+BASE_DIR = Path(__file__).resolve().parent
+DATASET_PATH = BASE_DIR / "intent_dataset.csv"
+
+df = pd.read_csv(DATASET_PATH)
 
 print(df.head())
 

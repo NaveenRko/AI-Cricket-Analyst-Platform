@@ -205,7 +205,20 @@ if st.button("Analyze"):
                             rewritten_question
                 
                         )
+                    #-----------------------
+                    # Tavily
+                    #--------------
+                    elif intent == "tavily":
                 
+                        pipeline = "tavily"
+                
+                        result = search_orchestrator(
+                
+                            llm,
+                
+                            rewritten_question
+                
+                        )
                     # -----------------
                     # Out of scope
                     # -----------------

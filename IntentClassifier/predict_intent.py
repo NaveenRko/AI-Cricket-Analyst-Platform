@@ -30,7 +30,7 @@ def predict_intent(question):
 if __name__ == "__main__":
 
     result = predict_intent(
-        "Strike rate of Yashasvi Jaiswal"
+        "Which team has the best record in must-win playoff games?"
     )
 
     print(result)
