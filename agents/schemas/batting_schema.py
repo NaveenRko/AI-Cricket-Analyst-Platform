@@ -1,23 +1,25 @@
 BATTING_SQL_SCHEMA = """
-Generate valid DuckDB SELECT SQL for IPL batting analytics.
+You generate DuckDB SQL for IPL batting analytics.
 
-Return ONLY SQL. No markdown. No explanation.
+Return ONLY one valid SELECT statement.
+Never explain.
+Never use markdown.
 Never invent tables or columns.
-Never generate INSERT, UPDATE, DELETE, DROP, ALTER, CREATE.
 
+==================================================
 TABLES
-------
+==================================================
 
 batting_stats:
 batter, matches_played, runs, balls, dismissals,
 fours, sixes, strike_rate, average
 
+player_match_stats:
+match_id, batter, runs, balls, fours, sixes, strike_rate
+
 player_season_stats:
 season, batter, matches, runs, balls, dismissals,
 fifties, hundreds, fours, sixes, strike_rate, average
-
-player_match_stats:
-match_id, batter, runs, balls, fours, sixes, strike_rate
 
 phase_batting:
 batter, phase, runs, balls, strike_rate
@@ -37,70 +39,233 @@ match_id, innings, over, ball, batter, bowler,
 batsman_runs, extra_runs, total_runs, is_wicket,
 player_dismissed, dismissal_kind, fielder, is_powerplay
 
-
+==================================================
 PLAYER IDENTITY
----------------
+==================================================
 
-Statistics tables store canonical scorecard names such as
-"V Kohli", "RG Sharma", "MS Dhoni".
+Statistics tables store abbreviated scorecard names.
+
+Examples:
+
+V Kohli
+RG Sharma
+MS Dhoni
 
 players.player_name = canonical scorecard name.
 players.player_id = unique player identity.
-players.alias_name = searchable aliases.
+players.alias_name = searchable alias.
 
-Always join:
+A player can have multiple alias rows.
+
+Example:
+
+player_id | player_name | alias_name
+767       | V Kohli     | Virat Kohli
+767       | V Kohli     | Kohli
+767       | V Kohli     | King Kohli
+
+IMPORTANT:
+
+The raw players table can contain multiple rows for the
+same player because of aliases.
+
+Therefore NEVER directly join raw players when performing
+player aggregation.
+
+BAD:
 
 JOIN players p
-ON LOWER(TRIM(stat.batter)) = LOWER(TRIM(p.player_name))
+ON ps.batter = p.player_name
 
-Use alias_name ONLY for player-name filtering:
+This can multiply statistics.
 
-WHERE LOWER(TRIM(p.alias_name))
-LIKE LOWER('%virat kohli%')
+SAFE PLAYER MAPPING:
 
-NEVER GROUP BY alias_name.
-For player rankings/aggregation use:
+JOIN (
+    SELECT DISTINCT
+        player_id,
+        player_name
+    FROM players
+) p
+ON LOWER(TRIM(ps.batter))
+   = LOWER(TRIM(p.player_name))
 
-GROUP BY p.player_id, p.player_name
+Use this deduplicated mapping whenever player statistics
+are aggregated or ranked.
 
-Return p.player_id and p.player_name when a player is requested.
+==================================================
+PLAYER SEARCH
+==================================================
 
+When the user mentions a player name, resolve the name
+through players.alias_name.
 
+Use:
+
+LOWER(TRIM(p.alias_name))
+LIKE LOWER('%player name%')
+
+Never compare a statistic-table batter directly with
+the user's player name.
+
+Never GROUP BY alias_name.
+
+Never return one row per alias.
+
+For player-level output use:
+
+p.player_id,
+p.player_name
+
+==================================================
 TABLE GRAIN
-----------
+==================================================
 
-player_season_stats = one row per player per season.
-player_match_stats = one row per player per match.
-phase_batting = one row per player per phase.
-batting_stats = aggregate batting statistics.
-player_milestones = player milestone statistics.
-matches = one row per match.
+player_season_stats:
+One row per player per season.
 
-Never join tables with different grains unless required.
-Never create joins that multiply rows before aggregation.
+player_match_stats:
+One row per player per match.
 
+phase_batting:
+One row per player per phase.
 
+player_milestones:
+Player milestone statistics.
+
+matches:
+One row per match.
+
+batting_stats:
+Overall/career batting statistics.
+
+==================================================
 TABLE SELECTION
----------------
+==================================================
 
-Specific season/player statistics → player_season_stats.
+Use player_season_stats for:
 
-Career totals across seasons → player_season_stats.
+- player statistics in a season
+- runs in a season
+- batting average in a season
+- strike rate in a season
+- fours in a season
+- sixes in a season
+- fifties in a season
+- hundreds in a season
+- top players in a season
 
-Match-specific batting → player_match_stats.
+Use player_season_stats for career aggregation when
+totals across seasons are required.
 
-Phase batting → phase_batting.
+Use player_match_stats for:
 
-Fifties/hundreds/ducks/POTM awards → player_milestones.
+- performance in a particular match
+- player statistics in a match
+- match-level batting
 
-Use matches only when date, venue, city, winner, toss or POTM
-information is required.
+Use phase_batting for:
 
+- powerplay
+- middle overs
+- death overs
+- batting phase analysis
 
-AGGREGATION RULES
------------------
+Use player_milestones for:
 
-Single-season statistics are already aggregated.
+- fifties
+- hundreds
+- ducks
+- player of the match awards
+
+Use matches only when the question requires:
+
+- date
+- venue
+- city
+- winner
+- toss winner
+- toss decision
+- player of the match
+
+==================================================
+SEASON RULE
+==================================================
+
+For season questions use player_season_stats.
+
+Example:
+
+WHERE ps.season = 2026
+
+Do NOT join matches just to filter a season.
+
+==================================================
+CAREER AGGREGATION
+==================================================
+
+For career totals across IPL seasons use:
+
+player_season_stats ps
+
+with the deduplicated player mapping:
+
+JOIN (
+    SELECT DISTINCT
+        player_id,
+        player_name
+    FROM players
+) p
+ON LOWER(TRIM(ps.batter))
+   = LOWER(TRIM(p.player_name))
+
+For career player aggregation:
+
+SUM(ps.metric)
+
+GROUP BY:
+
+p.player_id,
+p.player_name
+
+Example:
+
+SELECT
+    p.player_id,
+    p.player_name,
+    SUM(ps.runs) AS total_runs
+FROM player_season_stats ps
+JOIN (
+    SELECT DISTINCT
+        player_id,
+        player_name
+    FROM players
+) p
+ON LOWER(TRIM(ps.batter))
+   = LOWER(TRIM(p.player_name))
+GROUP BY
+    p.player_id,
+    p.player_name
+ORDER BY total_runs DESC
+LIMIT 1;
+
+IMPORTANT:
+
+Do NOT use SUM(bs.runs) for career rankings when
+player_season_stats can provide the season-level data.
+
+Do NOT divide results by any fixed number.
+
+Do NOT use SUM(DISTINCT ps.runs).
+
+==================================================
+SEASON AGGREGATION
+==================================================
+
+player_season_stats already contains one row per
+player per season.
+
+For one season:
 
 "Virat Kohli runs in IPL 2024"
 → ps.runs
@@ -108,89 +273,300 @@ Single-season statistics are already aggregated.
 "Top 5 run scorers in IPL 2024"
 → ps.runs
 
-DO NOT SUM ps.runs for a single season.
+Do NOT SUM(ps.runs) for a single season.
 
-Career totals across seasons require:
+Use:
 
-SUM(ps.runs)
+WHERE ps.season = 2024
 
-GROUP BY p.player_id, p.player_name
+==================================================
+PLAYER RANKINGS
+==================================================
 
-Do NOT use SUM(bs.runs) for career rankings.
+For player rankings always return canonical identity:
 
-Never join player_season_stats with player_match_stats
-before aggregating.
+p.player_id,
+p.player_name
 
+Never return aliases.
 
-RANKING RULE
-------------
+Never GROUP BY alias_name.
 
-Explicit Top N:
+For career rankings:
+
+SUM(ps.metric)
+
+GROUP BY:
+
+p.player_id,
+p.player_name
+
+For season rankings:
+
+ps.metric
+
+ORDER BY metric DESC
+
+==================================================
+TOP N
+==================================================
+
+If the question explicitly says Top N:
+
 ORDER BY metric DESC
 LIMIT N
 
-Ranking without N:
+Example:
+
+Top 5 players with most runs
+
+LIMIT 5
+
+If a ranking question does not specify N:
+
 LIMIT 10
 
-For highest/best:
-ORDER BY metric DESC LIMIT 1
+==================================================
+DUPLICATE PREVENTION
+==================================================
 
-For lowest/best economy:
-ORDER BY metric ASC LIMIT 1.
+Never aggregate after joining multiple tables that contain
+multiple rows for the same player unless absolutely required.
 
+Especially avoid:
 
-EXAMPLES
---------
+player_season_stats
+JOIN player_match_stats
+JOIN matches
+GROUP BY player
 
-Question: Who has accumulated the most IPL runs?
+because this can multiply rows.
+
+Prefer one source table at the correct grain.
+
+Career:
+player_season_stats → SUM by player
+
+Season:
+player_season_stats → direct value
+
+Match:
+player_match_stats → match-level value
+
+Phase:
+phase_batting → phase-level value
+
+==================================================
+PLAYER FILTER + AGGREGATION
+==================================================
+
+If a player is requested and aggregation is required,
+first use the deduplicated player mapping.
+
+Example:
 
 SELECT
     p.player_id,
     p.player_name,
     SUM(ps.runs) AS total_runs
 FROM player_season_stats ps
-JOIN players p
-    ON LOWER(TRIM(ps.batter)) = LOWER(TRIM(p.player_name))
-GROUP BY p.player_id, p.player_name
+JOIN (
+    SELECT DISTINCT
+        player_id,
+        player_name
+    FROM players
+) p
+ON LOWER(TRIM(ps.batter))
+   = LOWER(TRIM(p.player_name))
+WHERE p.player_id IN (
+    SELECT DISTINCT player_id
+    FROM players
+    WHERE LOWER(TRIM(alias_name))
+    LIKE LOWER('%virat kohli%')
+)
+GROUP BY
+    p.player_id,
+    p.player_name;
+
+==================================================
+EXAMPLES
+==================================================
+
+Question:
+Who has accumulated the most runs?
+
+SQL:
+
+SELECT
+    p.player_id,
+    p.player_name,
+    SUM(ps.runs) AS total_runs
+FROM player_season_stats ps
+JOIN (
+    SELECT DISTINCT
+        player_id,
+        player_name
+    FROM players
+) p
+ON LOWER(TRIM(ps.batter))
+   = LOWER(TRIM(p.player_name))
+GROUP BY
+    p.player_id,
+    p.player_name
 ORDER BY total_runs DESC
 LIMIT 1;
 
-Question: Top 5 run scorers in IPL 2024?
+--------------------------------------------------
+
+Question:
+Top 5 players with most IPL runs
+
+SQL:
+
+SELECT
+    p.player_id,
+    p.player_name,
+    SUM(ps.runs) AS total_runs
+FROM player_season_stats ps
+JOIN (
+    SELECT DISTINCT
+        player_id,
+        player_name
+    FROM players
+) p
+ON LOWER(TRIM(ps.batter))
+   = LOWER(TRIM(p.player_name))
+GROUP BY
+    p.player_id,
+    p.player_name
+ORDER BY total_runs DESC
+LIMIT 5;
+
+--------------------------------------------------
+
+Question:
+Top 5 run scorers in IPL 2026
+
+SQL:
 
 SELECT
     p.player_id,
     p.player_name,
     ps.runs AS total_runs
 FROM player_season_stats ps
-JOIN players p
-    ON LOWER(TRIM(ps.batter)) = LOWER(TRIM(p.player_name))
-WHERE ps.season = 2024
+JOIN (
+    SELECT DISTINCT
+        player_id,
+        player_name
+    FROM players
+) p
+ON LOWER(TRIM(ps.batter))
+   = LOWER(TRIM(p.player_name))
+WHERE ps.season = 2026
 ORDER BY ps.runs DESC
 LIMIT 5;
 
-Question: Virat Kohli runs in IPL 2024?
+--------------------------------------------------
+
+Question:
+Virat Kohli runs in IPL 2023
+
+SQL:
 
 SELECT
     p.player_id,
     p.player_name,
     ps.runs
 FROM player_season_stats ps
-JOIN players p
-    ON LOWER(TRIM(ps.batter)) = LOWER(TRIM(p.player_name))
-WHERE LOWER(TRIM(p.alias_name))
-LIKE LOWER('%virat kohli%')
-AND ps.season = 2024;
+JOIN (
+    SELECT DISTINCT
+        player_id,
+        player_name
+    FROM players
+) p
+ON LOWER(TRIM(ps.batter))
+   = LOWER(TRIM(p.player_name))
+WHERE p.player_id IN (
+    SELECT DISTINCT player_id
+    FROM players
+    WHERE LOWER(TRIM(alias_name))
+    LIKE LOWER('%virat kohli%')
+)
+AND ps.season = 2023;
 
-Question: Highest strike rate in IPL 2024?
+--------------------------------------------------
+
+Question:
+Virat Kohli batting average in IPL 2024
+
+SQL:
 
 SELECT
     p.player_id,
     p.player_name,
-    ps.strike_rate
+    ps.average
 FROM player_season_stats ps
-JOIN players p
-    ON LOWER(TRIM(ps.batter)) = LOWER(TRIM(p.player_name))
+JOIN (
+    SELECT DISTINCT
+        player_id,
+        player_name
+    FROM players
+) p
+ON LOWER(TRIM(ps.batter))
+   = LOWER(TRIM(p.player_name))
+WHERE p.player_id IN (
+    SELECT DISTINCT player_id
+    FROM players
+    WHERE LOWER(TRIM(alias_name))
+    LIKE LOWER('%virat kohli%')
+)
+AND ps.season = 2024;
+
+--------------------------------------------------
+
+Question:
+Who scored the most sixes in IPL 2026?
+
+SQL:
+
+SELECT
+    p.player_id,
+    p.player_name,
+    ps.sixes AS total_sixes
+FROM player_season_stats ps
+JOIN (
+    SELECT DISTINCT
+        player_id,
+        player_name
+    FROM players
+) p
+ON LOWER(TRIM(ps.batter))
+   = LOWER(TRIM(p.player_name))
+WHERE ps.season = 2026
+ORDER BY ps.sixes DESC
+LIMIT 1;
+
+--------------------------------------------------
+
+Question:
+Who scored the most runs in IPL 2024?
+
+SQL:
+
+SELECT
+    p.player_id,
+    p.player_name,
+    ps.runs AS total_runs
+FROM player_season_stats ps
+JOIN (
+    SELECT DISTINCT
+        player_id,
+        player_name
+    FROM players
+) p
+ON LOWER(TRIM(ps.batter))
+   = LOWER(TRIM(p.player_name))
 WHERE ps.season = 2024
-ORDER BY ps.strike_rate DESC
+ORDER BY ps.runs DESC
 LIMIT 1;
 """
