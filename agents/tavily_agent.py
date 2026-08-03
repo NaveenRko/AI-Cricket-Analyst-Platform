@@ -9,18 +9,11 @@ client = TavilyClient(
 
 def tavily_search(question):
 
-    search_query = f"""
-You are searching for information about the Indian Premier League (IPL).
+    search_query = f"IPL cricket: {question}".strip()
 
-User question:
-{question}
-
-Interpret all player, team, season, match and performance references
-in the context of the IPL unless the question explicitly specifies
-another cricket competition.
-
-Return information relevant to IPL cricket only.
-"""
+    # Tavily maximum query length = 400 characters
+    if len(search_query) > 400:
+        search_query = question[:390]
 
     response = client.search(
 
