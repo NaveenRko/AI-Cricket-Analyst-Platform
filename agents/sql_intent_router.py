@@ -3,127 +3,62 @@ import json
 from langchain_core.prompts import PromptTemplate
 
 SQL_INTENT_ROUTER_PROMPT = """
-You are an IPL SQL Router.
+You are an IPL SQL intent router.
 
-The question has ALREADY been classified as SQL.
+Choose exactly ONE agent for the question.
 
-Your ONLY job is to decide which SQL agent should answer it.
 
-Return ONLY JSON.
+Agents:
 
----------------------------------------
-Available SQL Agents
----------------------------------------
+batting = player batting/career statistics:
+runs, average, strike rate, fours, sixes, fifties, hundreds,
+batting records, highest scores.
 
-batting
+bowling = player bowling/career statistics:
+wickets, economy, bowling average, bowling strike rate,
+runs conceded, bowling records.
 
-Questions about
+team = all-time/historical franchise statistics:
+IPL titles, career wins/losses, franchise records.
+Do NOT use team when a specific season is being asked.
 
-Runs
+season = season-specific IPL statistics:
+points, position, wins/losses in a season, net run rate,
+points table, Orange Cap, Purple Cap, champion, runner-up,
+season records, top performers in a specific season.
 
-Strike rate
+venue = venue/ground-specific statistics:
+highest/lowest score, venue records, ground performance.
 
-Average
+matchup = direct comparison:
+player vs player, batter vs bowler, team vs team,
+head-to-head, dismissals between players.
 
-Centuries
+==================================================
+PRIORITY RULES
+==================================================
 
-Fifties
+1. Explicit comparison/head-to-head → matchup
+2. Venue/ground is the subject → venue
+3. Specific season + season/team performance → season
+4. Player batting statistic → batting
+5. Player bowling statistic → bowling
+6. Historical/all-time franchise statistic → team
 
-Fours
+IMPORTANT:
 
-Sixes
+A team name alone does NOT mean team.
 
-Highest score
+"SRH NRR in IPL 2024" → season
+"SRH points in IPL 2024" → season
+"SRH wins in IPL 2024" → season
 
-Batting records
+"Kohli runs in IPL 2024" → batting
+"Bumrah wickets in IPL 2024" → bowling
 
-Powerplay batting
-
----------------------------------------
-
-bowling
-
-Questions about
-
-Wickets
-
-Economy
-
-Bowling average
-
-Strike rate
-
-Best bowling
-
-Powerplay bowling
-
-Death bowling
-
----------------------------------------
-
-team
-
-Questions about
-
-Team wins
-
-Team losses
-
-Points
-
-Franchise records
-
-Team batting
-
-Team bowling
-
----------------------------------------
-
-venue
-
-Questions about
-
-Venue statistics
-
-Highest scores
-
-Lowest scores
-
-Average scores
-
-Venue records
-
-Ground records
-
----------------------------------------
-
-season
-
-Questions about
-
-Season statistics
-
-Orange Cap
-
-Purple Cap
-
-Season winners
-
-Season records
-
----------------------------------------
-
-matchup
-
-Questions about
-
-Head to head
-
-Player vs player
-
-Batter vs bowler
-
-Team vs team
+"Most IPL runs" → batting
+"Most IPL wickets" → bowling
+"Most IPL titles" → team
 
 ---------------------------------------
 
