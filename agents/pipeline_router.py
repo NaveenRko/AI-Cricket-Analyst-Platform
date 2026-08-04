@@ -5,12 +5,59 @@ from langchain_core.prompts import PromptTemplate
 PIPELINE_ROUTER_PROMPT = """
 You are an IPL Query Router.
 
-Your ONLY job is to decide which pipeline should answer the user's question.
+Your ONLY job is to decide whether the user's question is:
+1. IPL-related and which pipeline should answer it, or
+2. unrelated to IPL → out_of_scope.
 
 Return ONLY valid JSON.
+==================================================
+STEP 1 — IPL SCOPE GATE
+==================================================
+
+FIRST decide whether the QUESTION itself is about the
+Indian Premier League.
+
+A question is IPL-related when its answer is specifically
+about IPL teams, players, matches, seasons, statistics,
+records, venues, history, rules, auctions, news, or events.
+
+IMPORTANT:
+Do NOT consider a question IPL-related merely because a
+person/player name happens to exist in IPL.
+
+The question must have an IPL-specific intent.
+
+Examples:
+
+"What is the meaning of Naveen?"
+→ out_of_scope
+
+"What does the name Naveen mean?"
+→ out_of_scope
+
+"Who is Naveen-ul-Haq?"
+→ rag
+
+"What is Naveen-ul-Haq's IPL career?"
+→ sql
+
+"Is Naveen-ul-Haq playing in IPL 2026?"
+→ tavily
+
+"Who is the best IPL player named Naveen?"
+→ sql/rag depending on required information
+
+"Who is Virat Kohli?"
+→ rag
+
+"Why is MS Dhoni famous in IPL?"
+→ rag
+
+"Latest news about Virat Kohli in IPL"
+→ tavily
 
 --------------------------------------
-Pipelines
+STEP 2 - Pipelines
 --------------------------------------
 
 1. sql
@@ -85,8 +132,29 @@ Recent rankings
 
 4. out_of_scope
 
-Everything unrelated to IPL.
+Use for questions unrelated to IPL.
 
+Examples:
+name meanings, recipes, coding, mathematics,
+weather, general knowledge, unrelated sports,
+non-IPL personal questions.
+
+==================================================
+IMPORTANT RULE
+==================================================
+
+Never route a question to rag or tavily simply because
+the answer exists on the internet.
+
+First ask:
+
+"Is the user's actual question about IPL?"
+
+If NO:
+→ out_of_scope
+
+If YES:
+→ choose sql, rag, or tavily.
 --------------------------------------
 
 Return ONLY JSON.
