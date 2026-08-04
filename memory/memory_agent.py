@@ -15,6 +15,17 @@ def rewrite_question(
     Rewrite the question so it is
     completely self-contained.
     if question contains venue or player, consider it is about IPL venue and IPL player
+    Rewrite the question for clarity only.
+
+    Do NOT:
+    - add IPL players
+    - add teams
+    - add seasons
+    - infer a player from a generic name
+    - change the user's intent
+    - add information not explicitly present
+    
+    If the question is ambiguous, preserve the ambiguity.
 
     Return only the rewritten question.
     """
