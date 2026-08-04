@@ -137,6 +137,7 @@ Use for questions unrelated to IPL.
 Examples:
 name meanings, recipes, coding, mathematics,
 weather, general knowledge, unrelated sports,
+food ball players, FIFA cup, any other games other than IPL(criket)
 non-IPL personal questions.
 
 ==================================================
