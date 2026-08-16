@@ -16,6 +16,14 @@ def rewrite_question(
     completely self-contained.
     Rewrite the question for clarity only.
 
+    IMPORTANT:
+    Player names must NOT be modified, expanded, shortened,
+    or reformatted.
+    
+    If the input contains "virat", keep "virat".
+    If the input contains "V Kohli", keep "V Kohli".
+    If the input contains "Kohli", keep "Kohli".
+
     Do NOT:
     - add IPL players
     - add teams
