@@ -23,7 +23,7 @@ def rewrite_question(
     - infer a player from a generic name
     - change the user's intent
     - add information not explicitly present
-    - sometimes V Kohli will come as V V Kohli but make as V Kohli ONLY
+    - sometimes V Kohli will come as V V Kohli but make as V Kohli
     
     If the question is ambiguous, preserve the ambiguity.
 
