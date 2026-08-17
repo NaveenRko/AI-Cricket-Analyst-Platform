@@ -4,6 +4,7 @@ langchain
 langchain-community
 langchain-core
 langchain-groq
+langchain-openai
 langchain-huggingface
 
 sentence-transformers

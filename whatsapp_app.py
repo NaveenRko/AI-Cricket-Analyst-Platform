@@ -9,7 +9,7 @@ if not os.path.exists("database/ipl.duckdb"):
     create_database()
 
 import streamlit as st
-from langchain_groq import ChatGroq
+from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 
 from IntentClassifier.predict_intent import predict_intent
@@ -38,14 +38,19 @@ from database.logger import (
 )
 
 # ---------------------------------------------------------------------------
-# Page config + env + LLM (unchanged from app.py)
+# Page config + env + LLM 
 # ---------------------------------------------------------------------------
 st.set_page_config(page_title="IPL AI Analyst", page_icon="🏏", layout="centered")
 
 load_dotenv()
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY")
 
-llm = ChatGroq(groq_api_key=GROQ_API_KEY, model_name="llama-3.3-70b-versatile", temperature=0)
+llm = ChatOpenAI(
+    api_key=NVIDIA_API_KEY,
+    base_url="https://integrate.api.nvidia.com/v1",
+    model="openai/gpt-oss-120b",
+    temperature=0,
+)
 
 SQL_AGENT_MAP = {
     "batting": get_batting_result,
@@ -239,7 +244,7 @@ def run_pipeline(question: str) -> dict:
         "question": question, "rewritten_question": rewritten_question,
         "agent_selected": intent if intent else pipeline, "pipeline": pipeline,
         "status": "success", "error_message": None,
-        "model_used": "llama-3.3-70b-versatile",
+        "model_used": "openai/gpt-oss-120b",
         "final_answer": final_answer, "response_time": response_time,
     })
 
@@ -327,7 +332,7 @@ if question:
             save_query({
                 "question": question, "rewritten_question": question,
                 "agent_selected": None, "pipeline": None, "status": "error",
-                "error_message": error_text, "model_used": "llama-3.3-70b-versatile",
+                "error_message": error_text, "model_used": "openai/gpt-oss-120b",
                 "final_answer": None, "response_time": None,
             })
             st.session_state.messages.append({
