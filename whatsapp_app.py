@@ -2,6 +2,13 @@ import os
 import time
 import traceback
 from datetime import datetime
+from zoneinfo import ZoneInfo
+
+IST = ZoneInfo("Asia/Kolkata")
+
+
+def now_ist() -> str:
+    return datetime.now(IST).strftime("%I:%M %p")
 
 from create_db import create_database
 
@@ -12,25 +19,8 @@ import streamlit as st
 from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 
-from IntentClassifier.predict_intent import predict_intent
-
-from agents.batting_agent import get_batting_result
-from agents.bowling_agent import get_bowling_result
-from agents.team_agent import get_team_result
-from agents.season_agent import get_season_result
-from agents.venue_agent import get_venue_result
-from agents.matchup_agent import get_matchup_result
-
-from agents.hybrid_agents import get_hybrid_answer
-from agents.rag_hybrid import get_rag_hybrid_answer
-from agents.pipeline_router import pipeline_router
-from agents.sql_intent_router import sql_intent_router
-from agents.search_orchestrator import search_orchestrator
-
+from graph_pipeline import build_graph
 from memory.memory import memory
-from memory.memory_agent import rewrite_question
-from utils.alias_resolver import normalize_question
-from agents.smalltalk import detect_smalltalk
 
 from database.logger import (
     save_query, save_sql_log, save_tavily_log,
@@ -51,21 +41,6 @@ llm = ChatOpenAI(
     model="openai/gpt-oss-120b",
     temperature=0,
 )
-
-SQL_AGENT_MAP = {
-    "batting": get_batting_result,
-    "bowling": get_bowling_result,
-    "venue": get_venue_result,
-    "season": get_season_result,
-    "team": get_team_result,
-    "matchup": get_matchup_result,
-}
-
-OUT_OF_SCOPE_RESULT = {
-    "answer": "I'm an IPL specialist AI analyst. Please ask IPL-related questions.",
-    "generated_sql": None, "sql_result": None, "sql_error": None,
-    "rag_docs": [], "tavily_sources": [], "search_used": "out_of_scope", "llm_calls": 0,
-}
 
 # ---------------------------------------------------------------------------
 # WhatsApp visual chrome
@@ -158,84 +133,32 @@ st.markdown("""
 if "messages" not in st.session_state:
     st.session_state.messages = [
         {"role": "assistant", "text": "Ask me any IPL analytics question — batting, bowling, venues, matchups, records.",
-         "time": datetime.now().strftime("%I:%M %p"), "pipeline": None, "query_log_id": None,
+         "time": now_ist(), "pipeline": None, "query_log_id": None,
          "feedback_given": True},  # greeting has nothing to log feedback against
     ]
 
 # ---------------------------------------------------------------------------
 # Core pipeline call — same logic as app.py's Analyze block, just wrapped
 # ---------------------------------------------------------------------------
+compiled_graph = build_graph(llm)
+
+
 def run_pipeline(question: str) -> dict:
     start_time = time.time()
 
-    # -----------------------------------------------------------------
-    # Small talk short-circuit — greetings/closings never touch the
-    # classifier, LLM router, or SQL/RAG/Tavily agents. Still logged to
-    # Supabase (pipeline="smalltalk") so it shows up in your evaluation
-    # dashboard, but with zero LLM/embedding cost.
-    # -----------------------------------------------------------------
-    smalltalk = detect_smalltalk(question)
-    if smalltalk:
-        response_time = round(time.time() - start_time, 2)
-        query_log_id = save_query({
-            "question": question, "rewritten_question": question,
-            "agent_selected": smalltalk["type"], "pipeline": "smalltalk",
-            "status": "success", "error_message": None,
-            "model_used": "rule-based", "final_answer": smalltalk["answer"],
-            "response_time": response_time,
-        })
-        return {"answer": smalltalk["answer"], "pipeline": "smalltalk",
-                "intent": smalltalk["type"], "query_log_id": query_log_id,
-                "confidence": 1.0}
+    # Single LangGraph invocation now handles: pronoun rewrite, smalltalk,
+    # out-of-scope/injection detection, pipeline choice, sql sub-intent, and
+    # (for multi-entity comparisons) fanning out one lookup per entity and
+    # synthesizing the final comparison. No classifier, no separate
+    # pipeline_router/sql_intent_router calls.
+    final_state = compiled_graph.invoke({"question": question})
 
-    history = memory.load_memory_variables({})
+    final_answer = final_state["final_answer"]
+    pipeline = final_state.get("pipeline")
+    intent = final_state.get("intent")
+    result = final_state.get("result", {}) or {}
+    rewritten_question = final_state.get("rewritten_question", question)
 
-    needs_rewrite = any(
-        w in question.lower()
-        for w in ["he", "his", "him", "she", "her", "they", "them",
-                   "that player", "that team", "same season", "previous", "venue", "player"]
-    )
-    rewritten_question = rewrite_question(llm, history, question) if needs_rewrite else question
-    rewritten_question = normalize_question(rewritten_question)
-
-    prediction = predict_intent(rewritten_question)
-    intent, confidence = prediction["intent"], prediction["confidence"]
-
-    if confidence >= 0.97:
-        if intent in SQL_AGENT_MAP:
-            pipeline = "sql"
-            result = get_hybrid_answer(llm, rewritten_question, SQL_AGENT_MAP[intent])
-        elif intent == "rag":
-            pipeline = "rag"
-            result = get_rag_hybrid_answer(llm, rewritten_question)
-        elif intent == "tavily":
-            pipeline = "tavily"
-            result = search_orchestrator(llm, rewritten_question)
-        elif intent == "out_of_scope":
-            pipeline = "out_of_scope"
-            result = OUT_OF_SCOPE_RESULT
-        else:
-            route = pipeline_router(llm, rewritten_question)
-            pipeline, intent = route["pipeline"], None
-            result = OUT_OF_SCOPE_RESULT  # unexpected label fallback, mirrors app.py gap
-    else:
-        route = pipeline_router(llm, rewritten_question)
-        pipeline = route["pipeline"]
-        if pipeline == "sql":
-            sql_route = sql_intent_router(llm, rewritten_question)
-            intent = sql_route["intent"]
-            result = get_hybrid_answer(llm, rewritten_question, SQL_AGENT_MAP[intent])
-        elif pipeline == "rag":
-            intent = "rag"
-            result = get_rag_hybrid_answer(llm, rewritten_question)
-        elif pipeline == "tavily":
-            intent = "tavily"
-            result = search_orchestrator(llm, rewritten_question)
-        else:
-            intent = "out_of_scope"
-            result = OUT_OF_SCOPE_RESULT
-
-    final_answer = result["answer"]
     memory.save_context({"input": question}, {"output": final_answer})
 
     response_time = round(time.time() - start_time, 2)
@@ -259,11 +182,11 @@ def run_pipeline(question: str) -> dict:
         tavily_used=result.get("search_used") == "tavily",
         generated_sql=result.get("generated_sql") is not None,
         llm_calls=result.get("llm_calls", 2), response_time=response_time,
-        intent=intent, confidence=confidence,
+        intent=intent, confidence=1.0,
     )
 
     return {"answer": final_answer, "pipeline": pipeline, "intent": intent,
-            "query_log_id": query_log_id, "confidence": confidence}
+            "query_log_id": query_log_id, "confidence": 1.0}
 
 
 # ---------------------------------------------------------------------------
@@ -315,7 +238,7 @@ question = st.chat_input("Ask an IPL question")
 if question:
     st.session_state.messages.append({
         "role": "user", "text": question,
-        "time": datetime.now().strftime("%I:%M %p"),
+        "time": now_ist(),
     })
 
     with st.spinner("Analyzing IPL data..."):
@@ -323,7 +246,7 @@ if question:
             result = run_pipeline(question)
             st.session_state.messages.append({
                 "role": "assistant", "text": result["answer"],
-                "time": datetime.now().strftime("%I:%M %p"),
+                "time": now_ist(),
                 "pipeline": result["pipeline"], "intent": result["intent"],
                 "query_log_id": result["query_log_id"], "feedback_given": False,
             })
@@ -337,7 +260,7 @@ if question:
             })
             st.session_state.messages.append({
                 "role": "assistant", "text": f"Something went wrong:\n\n{error_text[-400:]}",
-                "time": datetime.now().strftime("%I:%M %p"),
+                "time": now_ist(),
                 "pipeline": "error", "intent": None, "query_log_id": None, "feedback_given": True,
             })
 
