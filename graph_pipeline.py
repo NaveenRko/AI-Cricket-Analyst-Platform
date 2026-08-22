@@ -1,4 +1,6 @@
 import random
+import time
+import logging
 from typing import TypedDict, Optional, Annotated
 import operator
 
@@ -18,6 +20,25 @@ from agents.matchup_agent import get_matchup_result
 from agents.smalltalk import detect_smalltalk
 from utils.alias_resolver import normalize_question
 from memory.memory import memory
+
+logger = logging.getLogger("graph_pipeline")
+logging.basicConfig(level=logging.INFO)
+
+
+def _timed(node_name):
+    """Wraps a node function and logs how long it took. Shows up in
+    Streamlit Cloud's 'Manage app' -> logs panel with a timestamp, so you
+    can see exactly which node ate the time on a slow request."""
+    def decorator(fn):
+        def wrapped(*args, **kwargs):
+            start = time.time()
+            try:
+                return fn(*args, **kwargs)
+            finally:
+                elapsed = round(time.time() - start, 2)
+                logger.info(f"[TIMING] {node_name}: {elapsed}s")
+        return wrapped
+    return decorator
 
 SQL_AGENT_MAP = {
     "batting": get_batting_result,
@@ -208,15 +229,15 @@ Never invent facts not present above.
 def build_graph(llm):
     graph = StateGraph(PipelineState)
 
-    graph.add_node("prefilter", prefilter_node)
-    graph.add_node("route", lambda s: route_node(s, llm))
-    graph.add_node("sql", lambda s: sql_node(s, llm))
-    graph.add_node("rag", lambda s: rag_node(s, llm))
-    graph.add_node("tavily", lambda s: tavily_node(s, llm))
-    graph.add_node("smalltalk", smalltalk_node)
-    graph.add_node("out_of_scope", out_of_scope_node)
-    graph.add_node("single_entity_lookup", lambda s: single_entity_lookup(s, llm))
-    graph.add_node("comparator", lambda s: comparator_node(s, llm))
+    graph.add_node("prefilter", _timed("prefilter")(prefilter_node))
+    graph.add_node("route", _timed("route")(lambda s: route_node(s, llm)))
+    graph.add_node("sql", _timed("sql")(lambda s: sql_node(s, llm)))
+    graph.add_node("rag", _timed("rag")(lambda s: rag_node(s, llm)))
+    graph.add_node("tavily", _timed("tavily")(lambda s: tavily_node(s, llm)))
+    graph.add_node("smalltalk", _timed("smalltalk")(smalltalk_node))
+    graph.add_node("out_of_scope", _timed("out_of_scope")(out_of_scope_node))
+    graph.add_node("single_entity_lookup", _timed("single_entity_lookup")(lambda s: single_entity_lookup(s, llm)))
+    graph.add_node("comparator", _timed("comparator")(lambda s: comparator_node(s, llm)))
 
     graph.set_entry_point("prefilter")
     graph.add_conditional_edges("prefilter", dispatch_prefilter, {
