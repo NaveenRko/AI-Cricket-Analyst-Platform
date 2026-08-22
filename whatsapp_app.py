@@ -44,6 +44,41 @@ llm = ChatOpenAI(
     max_retries=1,    # 1 retry, not the default 2 (each with backoff)
 )
 
+# gpt-oss-120b is a REASONING model (see build.nvidia.com/openai/gpt-oss-120b:
+# "Mixture of Experts (MoE) reasoning LLM") — it generates a hidden internal
+# chain-of-thought before every answer, which is what made your responses
+# deeper than the old Llama model but also what's driving latency, since the
+# router now calls SOME model on every single message before an answer is
+# even started. Routing is pure JSON classification — it gains nothing from
+# reasoning depth — so it gets a fast, non-reasoning model instead. The
+# actual answer-generating nodes (sql/rag/tavily/comparator) keep using the
+# reasoning `llm` above, since that's where the quality improvement you
+# noticed actually lives.
+#
+# NVIDIA's free tier keeps rotating which models get pulled from the Free
+# Endpoint tier (llama-3.3-70b-instruct and llama-3.1-8b-instruct have both
+# been cycled/deprecated within days of each other). Rather than hardcoding
+# one model that can silently die again, this chains several free,
+# non-reasoning NVIDIA endpoints with LangChain's built-in `.with_fallbacks`:
+# if the primary model errors (quota, deprecation, downtime), it transparently
+# retries the same request on the next one in the list. No code elsewhere
+# needs to change — `fast_llm` is still a normal Runnable.
+def _fast_candidate(model_name: str, timeout: int = 15) -> ChatOpenAI:
+    return ChatOpenAI(
+        api_key=NVIDIA_API_KEY,
+        base_url="https://integrate.api.nvidia.com/v1",
+        model=model_name,
+        temperature=0,
+        timeout=timeout,
+        max_retries=0,  # let with_fallbacks() move to the next model instead
+    )
+
+
+fast_llm = _fast_candidate("nvidia/nemotron-mini-4b-instruct").with_fallbacks([
+    _fast_candidate("meta/llama-3.2-3b-instruct"),
+    _fast_candidate("qwen/qwen2-7b-instruct"),
+])
+
 # ---------------------------------------------------------------------------
 # WhatsApp visual chrome
 # ---------------------------------------------------------------------------
@@ -142,7 +177,7 @@ if "messages" not in st.session_state:
 # ---------------------------------------------------------------------------
 # Core pipeline call — same logic as app.py's Analyze block, just wrapped
 # ---------------------------------------------------------------------------
-compiled_graph = build_graph(llm)
+compiled_graph = build_graph(llm, fast_llm)
 
 
 def run_pipeline(question: str) -> dict:
