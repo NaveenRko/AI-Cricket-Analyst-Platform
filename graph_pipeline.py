@@ -15,9 +15,9 @@ from agents.team_agent import get_team_result
 from agents.season_agent import get_season_result
 from agents.venue_agent import get_venue_result
 from agents.matchup_agent import get_matchup_result
+from agents.smalltalk import detect_smalltalk
 from utils.alias_resolver import normalize_question
 from memory.memory import memory
-from memory.memory_agent import rewrite_question
 
 SQL_AGENT_MAP = {
     "batting": get_batting_result,
@@ -61,28 +61,47 @@ class PipelineState(TypedDict, total=False):
 
 
 # ---------------------------------------------------------------------------
-# Node: rewrite pronouns / context using memory (unchanged from your app,
-# but now runs unconditionally before the single router call so the router
-# always sees a self-contained question)
+# Node: free, zero-latency regex pre-filter for obvious greetings/closings.
+# Only questions that DON'T match here pay for an LLM call at all — this
+# keeps "let the LLM decide" for every real question while not spending a
+# model round-trip on "hi" / "thanks".
 # ---------------------------------------------------------------------------
-def rewrite_node(state: PipelineState, llm) -> PipelineState:
-    history = memory.load_memory_variables({})
-    q = state["question"]
-    needs_rewrite = any(
-        w in q.lower()
-        for w in ["he", "his", "him", "she", "her", "they", "them",
-                   "that player", "that team", "same season", "previous", "venue", "player"]
-    )
-    rewritten = rewrite_question(llm, history, q) if needs_rewrite else q
-    return {"rewritten_question": normalize_question(rewritten)}
+def prefilter_node(state: PipelineState) -> PipelineState:
+    hit = detect_smalltalk(state["question"])
+    if hit:
+        return {"route": {"type": "smalltalk", "smalltalk_kind": hit["type"],
+                           "resolved_question": state["question"]}}
+    return {"route": None}
+
+
+def dispatch_prefilter(state: PipelineState) -> str:
+    return "smalltalk" if state.get("route") else "route"
 
 
 # ---------------------------------------------------------------------------
-# Node: the single unified router call
+# Node: the single unified router call. This now does BOTH what the old
+# separate rewrite_node (pronoun/coreference resolution via memory) and
+# route_node (pipeline + sql_intent + entity extraction) did — merged into
+# one LLM round-trip instead of two, cutting latency roughly in half for
+# every question that isn't pure smalltalk. It also fixes the coreference
+# bug: the old standalone rewrite prompt was explicitly told "do NOT infer
+# a player from a generic name" / "preserve ambiguity", so "who is his
+# wife?" never resolved to the actual player even when the previous turn
+# made it obvious. This merged prompt is allowed to resolve pronouns when
+# history unambiguously supports it.
 # ---------------------------------------------------------------------------
 def route_node(state: PipelineState, llm) -> PipelineState:
-    route = unified_route(llm, state["rewritten_question"])
-    return {"route": route}
+    history = memory.load_memory_variables({})
+    normalized_question = normalize_question(state["question"])
+
+    route = unified_route(llm, normalized_question, history=history)
+
+    # Cheap local pass again on the LLM's resolved_question, in case it
+    # substituted a raw alias name that still needs canonicalizing.
+    resolved = normalize_question(route.get("resolved_question", normalized_question))
+    route["resolved_question"] = resolved
+
+    return {"route": route, "rewritten_question": resolved}
 
 
 def dispatch(state: PipelineState):
@@ -189,7 +208,7 @@ Never invent facts not present above.
 def build_graph(llm):
     graph = StateGraph(PipelineState)
 
-    graph.add_node("rewrite", lambda s: rewrite_node(s, llm))
+    graph.add_node("prefilter", prefilter_node)
     graph.add_node("route", lambda s: route_node(s, llm))
     graph.add_node("sql", lambda s: sql_node(s, llm))
     graph.add_node("rag", lambda s: rag_node(s, llm))
@@ -199,8 +218,11 @@ def build_graph(llm):
     graph.add_node("single_entity_lookup", lambda s: single_entity_lookup(s, llm))
     graph.add_node("comparator", lambda s: comparator_node(s, llm))
 
-    graph.set_entry_point("rewrite")
-    graph.add_edge("rewrite", "route")
+    graph.set_entry_point("prefilter")
+    graph.add_conditional_edges("prefilter", dispatch_prefilter, {
+        "smalltalk": "smalltalk",
+        "route": "route",
+    })
     graph.add_conditional_edges("route", dispatch, {
         "smalltalk": "smalltalk",
         "out_of_scope": "out_of_scope",

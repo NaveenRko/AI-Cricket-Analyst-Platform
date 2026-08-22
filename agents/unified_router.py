@@ -3,19 +3,58 @@ import json
 from langchain_core.prompts import PromptTemplate
 
 # ---------------------------------------------------------------------------
+# One LLM call replaces: IntentClassifier + smalltalk.py (regex) +
+# pipeline_router.py + sql_intent_router.py.
+#
+# Why merge them:
+# - The classifier only ever sees ONE bucket per question, so "how many runs
+#   did virat and rohit make in 2026, who performed best" silently collapses
+#   to a single "batting" call with no idea two players/entities are in play.
+# - Regex smalltalk misses any paraphrase ("hey how's it going today") that
+#   doesn't match the exact patterns.
+# - Running classifier -> pipeline_router -> sql_intent_router costs up to
+#   3 model calls per question in the worst case. This does it in 1.
+# ---------------------------------------------------------------------------
 
 UNIFIED_ROUTER_PROMPT = """
 You are the router for an IPL (Indian Premier League cricket) analyst chatbot.
 
-Read the user's question and return ONLY valid JSON describing how to answer it.
-No prose, no markdown fences — JSON only.
+Read the conversation history and the user's latest question, then return
+ONLY valid JSON. No prose, no markdown fences — JSON only.
+
+Conversation history (most recent turns):
+{history}
+
+Latest question:
+{question}
+
+==================================================
+STEP 0 — Resolve references using history
+==================================================
+If the latest question uses a pronoun or vague reference ("he", "his", "him",
+"she", "her", "they", "that player", "that team", "his wife", "the player
+mentioned earlier", etc.) AND the conversation history makes it UNAMBIGUOUS
+which single player/team it refers to (i.e. exactly one player/team was the
+subject of the immediately preceding turn), rewrite the question substituting
+the pronoun with that exact player/team name. Keep the player's name in
+whatever form it already appears in the history — do not expand, correct, or
+reformat it.
+
+Do NOT invent or guess an entity that isn't clearly established in the
+history. If more than one player/team was recently discussed and it's not
+clear which one the pronoun refers to, or no relevant entity appears in
+history at all, leave the question exactly as written (do not guess).
+
+Put the result (resolved if possible, otherwise unchanged) in
+"resolved_question". All later steps below reason about "resolved_question",
+not the raw latest question.
 
 ==================================================
 STEP 1 — Is this smalltalk?
 ==================================================
-If the message is PURELY a greeting ("hi", "hello", "good morning", "hey there",
-paraphrases included) or PURELY a closing/thanks ("bye", "thanks", "that's all",
-"talk later"), with no actual IPL question in it, set:
+If resolved_question is PURELY a greeting ("hi", "hello", "good morning",
+"hey there", paraphrases included) or PURELY a closing/thanks ("bye",
+"thanks", "that's all", "talk later"), with no actual IPL question in it, set:
   "type": "smalltalk"
   "smalltalk_kind": "greeting" or "closing"
 and leave every other field null / empty.
@@ -23,9 +62,12 @@ and leave every other field null / empty.
 ==================================================
 STEP 2 — IPL scope gate
 ==================================================
-If it is not smalltalk, decide whether the question's actual INTENT is about
-the Indian Premier League (teams, players, matches, seasons, stats, records,
-venues, history, rules, auctions, news, events).
+If it is not smalltalk, decide whether resolved_question's actual INTENT is
+about the Indian Premier League (teams, players, matches, seasons, stats,
+records, venues, history, rules, auctions, news, events) — specifically IPL
+performance/statistics/facts, not general biography (e.g. a player's family,
+personal life, or unrelated public info is out_of_scope even once the player
+is correctly identified).
 
 A player/person name existing in IPL does NOT make an unrelated question
 IPL-related. "What does the name Naveen mean?" is out_of_scope even though
@@ -90,8 +132,8 @@ A team name alone does NOT mean "team" — "SRH wins in IPL 2024" is "season".
 ==================================================
 STEP 4 — Entities and comparison
 ==================================================
-Extract every distinct player or team name mentioned into "entities" (use the
-name exactly as written by the user — do not correct/expand it).
+Extract every distinct player or team name mentioned in resolved_question
+into "entities" (use the name exactly as written — do not correct/expand it).
 Set "is_comparison": true if the question asks to compare, rank, or judge
 which of 2+ entities performed better/best/worse, or explicitly says
 "vs"/"compared to"/"who performed best". Otherwise false.
@@ -100,6 +142,7 @@ which of 2+ entities performed better/best/worse, or explicitly says
 Output format — return ONLY this JSON shape
 ==================================================
 {{
+  "resolved_question": "...",
   "type": "smalltalk" | "out_of_scope" | "answerable",
   "smalltalk_kind": "greeting" | "closing" | null,
   "pipeline": "sql" | "rag" | "tavily" | "combination" | null,
@@ -107,21 +150,18 @@ Output format — return ONLY this JSON shape
   "entities": ["Name1", "Name2"],
   "is_comparison": true | false
 }}
-
-Question:
-{question}
 """
 
 
-def unified_route(llm, question):
+def unified_route(llm, question, history=""):
     prompt = PromptTemplate(
         template=UNIFIED_ROUTER_PROMPT,
-        input_variables=["question"],
+        input_variables=["question", "history"],
     )
 
     chain = prompt | llm
 
-    response = chain.invoke({"question": question})
+    response = chain.invoke({"question": question, "history": history})
 
     usage = response.response_metadata["token_usage"]
 
@@ -130,11 +170,13 @@ def unified_route(llm, question):
         content = content.replace("```json", "")
         content = content.replace("```", "")
         route = json.loads(content)
+        route.setdefault("resolved_question", question)
     except Exception:
         # Safe fallback: never crash the app, never silently answer an
         # unparseable/adversarial input — route it to rag, same fallback
         # philosophy as the existing pipeline_router.
         route = {
+            "resolved_question": question,
             "type": "answerable",
             "smalltalk_kind": None,
             "pipeline": "rag",

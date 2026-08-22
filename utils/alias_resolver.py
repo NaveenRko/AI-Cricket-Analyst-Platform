@@ -16,45 +16,27 @@ PLAYER_LOOKUP = dict(
     )
 )
 
+# Build ONE combined pattern instead of looping re.sub per alias. Looping
+# was the bug: each sequential re.sub re-scans the FULL (already partially
+# normalized) text, so once "virat kohli" -> "V Kohli" fires, the next
+# alias "kohli" still matches the "Kohli" just inserted and fires again,
+# producing "V V Kohli". A single combined alternation pattern matches each
+# span of the original text exactly once, so already-substituted text is
+# never re-scanned. Aliases are ordered longest-first so "virat kohli" wins
+# over the shorter "kohli" alternative at the same position.
+_ALIASES_BY_LENGTH = sorted(PLAYER_LOOKUP.keys(), key=len, reverse=True)
+_COMBINED_PATTERN = re.compile(
+    r"\b(" + "|".join(re.escape(a) for a in _ALIASES_BY_LENGTH) + r")\b",
+    flags=re.IGNORECASE,
+)
 
-def normalize_question(question: str):
 
-    normalized = question
+def normalize_question(question: str) -> str:
 
-    lower_question = question.lower()
+    def _replace(match):
+        return PLAYER_LOOKUP[match.group(0).lower()]
 
-    # longest names first
-    names = sorted(
-        PLAYER_LOOKUP.keys(),
-        key=len,
-        reverse=True
-    )
-
-    for player in names:
-
-        pattern = r"\b" + re.escape(player) + r"\b"
-
-        if re.search(
-            pattern,
-            lower_question,
-            flags=re.IGNORECASE
-        ):
-
-            normalized = re.sub(
-
-                pattern,
-
-                PLAYER_LOOKUP[player],
-
-                normalized,
-
-                flags=re.IGNORECASE
-
-            )
-
-            lower_question = normalized.lower()
-
-    return normalized
+    return _COMBINED_PATTERN.sub(_replace, question)
 
 
 #print(normalize_question("How many runs did sehwag score?"))
