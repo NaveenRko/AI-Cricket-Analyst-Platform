@@ -111,11 +111,11 @@ def dispatch_prefilter(state: PipelineState) -> str:
 # made it obvious. This merged prompt is allowed to resolve pronouns when
 # history unambiguously supports it.
 # ---------------------------------------------------------------------------
-def route_node(state: PipelineState, llm) -> PipelineState:
+def route_node(state: PipelineState, fast_llm) -> PipelineState:
     history = memory.load_memory_variables({})
     normalized_question = normalize_question(state["question"])
 
-    route = unified_route(llm, normalized_question, history=history)
+    route = unified_route(fast_llm, normalized_question, history=history)
 
     # Cheap local pass again on the LLM's resolved_question, in case it
     # substituted a raw alias name that still needs canonicalizing.
@@ -226,11 +226,11 @@ Never invent facts not present above.
 # ---------------------------------------------------------------------------
 # Build the graph
 # ---------------------------------------------------------------------------
-def build_graph(llm):
+def build_graph(llm, fast_llm):
     graph = StateGraph(PipelineState)
 
     graph.add_node("prefilter", _timed("prefilter")(prefilter_node))
-    graph.add_node("route", _timed("route")(lambda s: route_node(s, llm)))
+    graph.add_node("route", _timed("route")(lambda s: route_node(s, fast_llm)))
     graph.add_node("sql", _timed("sql")(lambda s: sql_node(s, llm)))
     graph.add_node("rag", _timed("rag")(lambda s: rag_node(s, llm)))
     graph.add_node("tavily", _timed("tavily")(lambda s: tavily_node(s, llm)))
