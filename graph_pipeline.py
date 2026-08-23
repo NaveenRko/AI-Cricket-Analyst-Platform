@@ -120,6 +120,9 @@ def dispatch(state: PipelineState):
     entities = route.get("entities") or []
     is_comparison = route.get("is_comparison", False)
 
+    if pipeline == "multi_aspect":
+        return "multi_aspect"
+
     if pipeline == "combination" or (is_comparison and len(entities) >= 2):
         sql_intent = route.get("sql_intent")
         sends = []
@@ -161,6 +164,21 @@ def _result_mentions_entities(df, entities) -> bool:
     return any(name.lower() in blob for name in entities)
 
 
+def _extract_result_entities(df) -> list:
+    """Pull player_name values out of a SQL result to use as the tracked
+    entity for the NEXT turn's pronoun resolution. This is necessary
+    because a ranking question like "who is the top run scorer" never
+    names a player in its OWN text — the name only exists once the SQL
+    executes — so route_node's text-only extraction (which runs BEFORE
+    execution) can never catch it. If the result has more than one player
+    (a "top 5" list), that's fine: route_node's Step 0 already only
+    resolves a pronoun when last_entities has EXACTLY ONE name, so a
+    multi-row result correctly stays ambiguous rather than guessing."""
+    if df is None or df.empty or "player_name" not in df.columns:
+        return []
+    return df["player_name"].dropna().unique().tolist()
+
+
 def sql_node(state: PipelineState, llm, fast_llm) -> PipelineState:
     sql_intent = state["route"]["sql_intent"] or "batting"
     agent_fn = SQL_AGENT_MAP[sql_intent]
@@ -196,7 +214,11 @@ def sql_node(state: PipelineState, llm, fast_llm) -> PipelineState:
         # answer quality.
         result = search_orchestrator(llm, question)
 
-    return {"pipeline": "sql", "intent": sql_intent, "result": result, "final_answer": result["answer"]}
+    result_entities = _extract_result_entities(sql_result.get("result_df"))
+    next_last_entities = result_entities if result_entities else entities
+
+    return {"pipeline": "sql", "intent": sql_intent, "result": result,
+            "final_answer": result["answer"], "last_entities": next_last_entities}
 
 
 def rag_node(state: PipelineState, llm) -> PipelineState:
@@ -262,6 +284,98 @@ Never invent facts not present above.
             "final_answer": response.content}
 
 
+_PRONOUNS = ("he ", "his ", "him ", "she ", "her ", "they ", "their ",
+             "he'", "his'", "the player", "that player")
+
+
+def _run_aspect(aspect: dict, llm, fast_llm):
+    """Runs one aspect (sql/rag/tavily) using the same tiered logic as the
+    main sql_node, returning (answer_text, result_df_or_None)."""
+    pipeline = aspect.get("pipeline")
+    question = aspect.get("sub_question", "")
+
+    if pipeline == "sql":
+        sql_intent = aspect.get("sql_intent") or "batting"
+        agent_fn = SQL_AGENT_MAP.get(sql_intent, get_batting_result)
+        sql_result = agent_fn(fast_llm, question)
+        if sql_result["result_df"] is None or sql_result["result_df"].empty:
+            sql_result = agent_fn(llm, question)
+        if sql_result["result_df"] is not None and not sql_result["result_df"].empty:
+            return sql_result["result_text"], sql_result["result_df"]
+        fallback = search_orchestrator(llm, question)
+        return fallback["answer"], None
+
+    if pipeline == "tavily":
+        result = search_orchestrator(llm, question)
+        return result["answer"], None
+
+    # default: rag
+    result = get_rag_hybrid_answer(llm, question)
+    return result["answer"], None
+
+
+def multi_aspect_node(state: PipelineState, llm, fast_llm) -> PipelineState:
+    aspects = state["route"].get("aspects") or []
+
+    if len(aspects) < 2:
+        # Router said multi_aspect but didn't actually fill 2 aspects —
+        # fall back to a single rag lookup on the whole question rather
+        # than crash on a malformed route.
+        result = get_rag_hybrid_answer(llm, state["rewritten_question"])
+        return {"pipeline": "multi_aspect", "intent": None, "result": {},
+                "final_answer": result["answer"]}
+
+    aspect_1, aspect_2 = aspects[0], aspects[1]
+
+    # Aspect 1 runs as written — it's the part that establishes/names the
+    # subject (e.g. the SQL ranking that resolves to a specific player).
+    answer_1, df_1 = _run_aspect(aspect_1, llm, fast_llm)
+
+    # Pull the actual resolved entity out of aspect 1's RESULT, not just
+    # the route's text-based entity extraction — same reasoning as
+    # sql_node's last_entities fix: a ranking question's subject only
+    # exists once its query executes.
+    resolved_entities = _extract_result_entities(df_1)
+    prior_entities = state["route"].get("entities") or []
+    entity = (resolved_entities[0] if len(resolved_entities) == 1
+              else prior_entities[0] if len(prior_entities) == 1
+              else None)
+
+    # Substitute the resolved entity into aspect 2's sub_question if it
+    # was written with a pronoun/placeholder, per the router's instructions.
+    sub_q_2 = aspect_2.get("sub_question", "")
+    if entity:
+        lowered = sub_q_2.lower()
+        if any(p in lowered for p in _PRONOUNS):
+            aspect_2 = {**aspect_2, "sub_question": f"Regarding {entity}: {sub_q_2}"}
+        else:
+            aspect_2 = {**aspect_2, "sub_question": normalize_question(sub_q_2)}
+
+    answer_2, _ = _run_aspect(aspect_2, llm, fast_llm)
+
+    synthesis_prompt = f"""
+Original question:
+{state['rewritten_question']}
+
+Part 1 answer:
+{answer_1}
+
+Part 2 answer:
+{answer_2}
+
+Combine these into one direct, natural answer to the original question.
+Use ONLY the facts given above — never invent anything not present in them.
+If either part indicates no data was found, say so plainly for that part
+rather than making something up.
+"""
+    response = llm.invoke(synthesis_prompt)
+
+    next_last_entities = [entity] if entity else prior_entities
+
+    return {"pipeline": "multi_aspect", "intent": None, "result": {},
+            "final_answer": response.content, "last_entities": next_last_entities}
+
+
 # ---------------------------------------------------------------------------
 # Build the graph — entry point is the router itself, no pre-filter
 # ---------------------------------------------------------------------------
@@ -276,6 +390,7 @@ def build_graph(llm, fast_llm):
     graph.add_node("out_of_scope", _timed("out_of_scope")(out_of_scope_node))
     graph.add_node("single_entity_lookup", _timed("single_entity_lookup")(lambda s: single_entity_lookup(s, llm)))
     graph.add_node("comparator", _timed("comparator")(lambda s: comparator_node(s, llm)))
+    graph.add_node("multi_aspect", _timed("multi_aspect")(lambda s: multi_aspect_node(s, llm, fast_llm)))
 
     graph.set_entry_point("route")
     graph.add_conditional_edges("route", dispatch, {
@@ -285,11 +400,12 @@ def build_graph(llm, fast_llm):
         "rag": "rag",
         "tavily": "tavily",
         "combination": "comparator",  # fallback label; real fan-out goes via Send
+        "multi_aspect": "multi_aspect",
     })
 
     graph.add_edge("single_entity_lookup", "comparator")
 
-    for terminal in ("sql", "rag", "tavily", "smalltalk", "out_of_scope", "comparator"):
+    for terminal in ("sql", "rag", "tavily", "smalltalk", "out_of_scope", "comparator", "multi_aspect"):
         graph.add_edge(terminal, END)
 
     return graph.compile()

@@ -120,15 +120,37 @@ router), and choose one "pipeline":
                "why is X famous", "history of the Orange Cap")
 - "tavily"  -> requires CURRENT information (today's match, latest news,
                current captain, injury news, this year's auction/retention)
-- "combination" -> the question genuinely needs more than one pipeline, OR
-               involves 2+ distinct entities (players/teams) that each need
-               their own lookup before they can be compared/combined
-               (e.g. "how many runs did Virat and Rohit make in 2026 and
-               who performed best" — two players, each needs a separate
-               batting lookup, then a comparison)
+- "combination" -> the question involves 2+ DISTINCT ENTITIES (players/
+               teams) that each need the SAME KIND of lookup before they
+               can be compared/combined (e.g. "how many runs did Virat and
+               Rohit make in 2026 and who performed best" — two players,
+               each needs a separate batting lookup, then a comparison)
+- "multi_aspect" -> the question is about ONE subject (which may itself be
+               the answer to a ranking/lookup, e.g. "the top run scorer")
+               but asks for 2+ DIFFERENT KINDS of information about it that
+               would need different pipelines — e.g. "who is the top run
+               scorer and where was he born" (sql ranking + rag biography),
+               "Kohli's strike rate and his role in the team" (sql stat +
+               rag context). This is NOT the same as "combination" — here
+               there is exactly one subject, just multiple facets of it.
+               When you choose "multi_aspect", also fill "aspects": a list
+               of EXACTLY 2 objects, each:
+                 {{"pipeline": "sql"|"rag"|"tavily",
+                   "sql_intent": <same rules as below, or null>,
+                   "sub_question": "..."}}
+               The first aspect should be whichever part of the question
+               establishes/names the subject (often the sql ranking part,
+               if the subject is itself the answer to a lookup). Write the
+               second aspect's "sub_question" using a pronoun/placeholder
+               ("he"/"the player"/"they") rather than a name if the subject
+               is only known from the first aspect's result — the code
+               substitutes it after aspect 1 resolves. If the subject is
+               already named in the question, write both sub_questions with
+               the real name. Leave "aspects" null for every other pipeline.
 
-If "pipeline" is "sql" or the sql portion of a "combination", also set
-"sql_intent" to exactly one of: batting, bowling, team, season, venue, matchup
+If "pipeline" is "sql" or the sql portion of a "combination"/"multi_aspect",
+also set "sql_intent" to exactly one of:
+batting, bowling, team, season, venue, matchup
   batting = career/season runs, average, strike rate, fours, sixes, 50s/100s
   bowling = wickets, economy, bowling average/strike rate, runs conceded
   team    = all-time franchise stats (titles, career wins/losses) — NOT a
@@ -160,10 +182,14 @@ Output format — return ONLY this JSON shape
   "type": "smalltalk" | "out_of_scope" | "answerable",
   "smalltalk_kind": "greeting" | "closing" | null,
   "direct_reply": "..." | null,
-  "pipeline": "sql" | "rag" | "tavily" | "combination" | null,
+  "pipeline": "sql" | "rag" | "tavily" | "combination" | "multi_aspect" | null,
   "sql_intent": "batting" | "bowling" | "team" | "season" | "venue" | "matchup" | null,
   "entities": ["Name1", "Name2"],
-  "is_comparison": true | false
+  "is_comparison": true | false,
+  "aspects": [
+    {{"pipeline": "sql"|"rag"|"tavily", "sql_intent": "..." | null, "sub_question": "..."}},
+    {{"pipeline": "sql"|"rag"|"tavily", "sql_intent": "..." | null, "sub_question": "..."}}
+  ] | null
 }}
 """
 
@@ -191,6 +217,7 @@ def unified_route(llm, question, history="", last_entities=None):
         route = json.loads(content)
         route.setdefault("resolved_question", question)
         route.setdefault("direct_reply", None)
+        route.setdefault("aspects", None)
     except Exception:
         # Safe fallback: never crash the app, never silently answer an
         # unparseable/adversarial input — route it to rag, same fallback
@@ -204,6 +231,7 @@ def unified_route(llm, question, history="", last_entities=None):
             "sql_intent": None,
             "entities": [],
             "is_comparison": False,
+            "aspects": None,
         }
 
     route["usage"] = usage
