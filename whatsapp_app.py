@@ -40,7 +40,9 @@ llm = ChatOpenAI(
     base_url="https://integrate.api.nvidia.com/v1",
     model="openai/gpt-oss-120b",
     temperature=0,
-    timeout=30,       # fail fast instead of the openai SDK's 600s default
+    timeout=45,       # fail fast instead of the openai SDK's 600s default;
+                      # 45s (not 30s) since this is now only tier-2 fallback
+                      # for SQL and the main path for rag/tavily/comparator
     max_retries=1,    # 1 retry, not the default 2 (each with backoff)
 )
 

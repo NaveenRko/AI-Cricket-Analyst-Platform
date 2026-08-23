@@ -29,16 +29,35 @@ def generate_and_execute_sql(
     )
 
     chain = prompt | llm
-    
 
-    response = chain.invoke(
-        {
-            "schema": schema,
-            "question": question
+    try:
+        response = chain.invoke(
+            {
+                "schema": schema,
+                "question": question
+            }
+        )
+        sql = response.content.strip()
+    except Exception as e:
+        # Previously uncaught — a timeout or any other API error here (e.g.
+        # OpenAITimeoutError) would propagate all the way up through
+        # get_hybrid_answer -> the LangGraph "sql" node and crash the whole
+        # Streamlit session. Returning a clean error dict instead lets the
+        # caller's existing "SQL failed -> fall back to RAG/Tavily" logic
+        # handle it gracefully, the same way it already handles an empty df.
+        return {
+
+            "generated_sql": None,
+
+            "result_df": None,
+
+            "result_json": [],
+
+            "result_text": "No statistics available.",
+
+            "error": f"LLM call failed: {e}"
+
         }
-    )
-   
-    sql = response.content.strip()
 
     sql = sql.replace("```sql", "")
     sql = sql.replace("```", "")
