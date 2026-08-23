@@ -17,6 +17,7 @@ if not os.path.exists("database/ipl.duckdb"):
 
 import streamlit as st
 from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from dotenv import load_dotenv
 
 from graph_pipeline import build_graph
@@ -34,51 +35,74 @@ st.set_page_config(page_title="IPL AI Analyst", page_icon="🏏", layout="center
 
 load_dotenv()
 NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-llm = ChatOpenAI(
-    api_key=NVIDIA_API_KEY,
-    base_url="https://integrate.api.nvidia.com/v1",
-    model="openai/gpt-oss-120b",
-    temperature=0,
-    timeout=30,       # fail fast instead of the openai SDK's 600s default
-    max_retries=0,    # was 1: a retry against the SAME struggling endpoint
-                      # just doubles the wait (45s+45s=~90s, matches the
-                      # observed 92s timeout) for little reliability gain
-)
-
-# gpt-oss-120b is a REASONING model (see build.nvidia.com/openai/gpt-oss-120b:
-# "Mixture of Experts (MoE) reasoning LLM") — it generates a hidden internal
-# chain-of-thought before every answer, which is what made your responses
-# deeper than the old Llama model but also what's driving latency, since the
-# router now calls SOME model on every single message before an answer is
-# even started. Routing is pure JSON classification — it gains nothing from
-# reasoning depth — so it gets a fast, non-reasoning model instead. The
-# actual answer-generating nodes (sql/rag/tavily/comparator) keep using the
-# reasoning `llm` above, since that's where the quality improvement you
-# noticed actually lives.
+# ---------------------------------------------------------------------------
+# Provider switch: Groq's custom LPU hardware is built specifically for
+# low-latency inference (~500 tok/s vs typical GPU-hosted serving), and
+# critically it hosts the SAME openai/gpt-oss-120b model that was already
+# in use on NVIDIA — same reasoning depth and answer quality, just served
+# much faster. This is the root-cause fix; everything before it (timeouts,
+# tiering, retries) only worked AROUND a slow/unstable provider.
 #
-# NVIDIA's free tier keeps rotating which models get pulled from the Free
-# Endpoint tier (llama-3.3-70b-instruct and llama-3.1-8b-instruct have both
-# been cycled/deprecated within days of each other). Rather than hardcoding
-# one model that can silently die again, this chains several free,
-# non-reasoning NVIDIA endpoints with LangChain's built-in `.with_fallbacks`:
-# if the primary model errors (quota, deprecation, downtime), it transparently
-# retries the same request on the next one in the list. No code elsewhere
-# needs to change — `fast_llm` is still a normal Runnable.
-def _fast_candidate(model_name: str, timeout: int = 15) -> ChatOpenAI:
+# NVIDIA is kept as a cross-provider .with_fallbacks() layer, not removed —
+# if Groq's free tier ever rate-limits or deprecates a model (which has
+# already happened twice on NVIDIA's side), the request transparently
+# retries against the other provider instead of failing outright. Provider
+# diversity, not just model diversity.
+# ---------------------------------------------------------------------------
+llm = ChatGroq(
+    model="openai/gpt-oss-120b",
+    api_key=GROQ_API_KEY,
+    temperature=0,
+    timeout=30,
+    max_retries=0,   # let with_fallbacks() move to the next provider instead
+                     # of doubling the wait against the same slow request
+).with_fallbacks([
+    ChatOpenAI(
+        api_key=NVIDIA_API_KEY,
+        base_url="https://integrate.api.nvidia.com/v1",
+        model="openai/gpt-oss-120b",
+        temperature=0,
+        timeout=45,
+        max_retries=0,
+    ),
+])
+
+# Routing is pure JSON classification — it gains nothing from reasoning
+# depth — so it uses small, fast, non-reasoning models. Groq's
+# llama-3.1-8b-instant has the most generous free-tier quota (14,400
+# requests/day) of any Groq model, making it the natural primary for the
+# highest-frequency call in the whole graph. llama-3.3-70b-versatile is a
+# stronger second-tier Groq fallback before dropping to NVIDIA entirely.
+def _nvidia_fast_candidate(model_name: str, timeout: int = 15) -> ChatOpenAI:
     return ChatOpenAI(
         api_key=NVIDIA_API_KEY,
         base_url="https://integrate.api.nvidia.com/v1",
         model=model_name,
         temperature=0,
         timeout=timeout,
-        max_retries=0,  # let with_fallbacks() move to the next model instead
+        max_retries=0,
     )
 
 
-fast_llm = _fast_candidate("nvidia/nemotron-mini-4b-instruct").with_fallbacks([
-    _fast_candidate("meta/llama-3.2-3b-instruct"),
-    _fast_candidate("qwen/qwen2-7b-instruct"),
+fast_llm = ChatGroq(
+    model="llama-3.1-8b-instant",
+    api_key=GROQ_API_KEY,
+    temperature=0,
+    timeout=15,
+    max_retries=0,
+).with_fallbacks([
+    ChatGroq(
+        model="llama-3.3-70b-versatile",
+        api_key=GROQ_API_KEY,
+        temperature=0,
+        timeout=15,
+        max_retries=0,
+    ),
+    _nvidia_fast_candidate("nvidia/nemotron-mini-4b-instruct"),
+    _nvidia_fast_candidate("meta/llama-3.2-3b-instruct"),
+    _nvidia_fast_candidate("qwen/qwen2-7b-instruct"),
 ])
 
 # ---------------------------------------------------------------------------
