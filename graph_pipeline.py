@@ -73,6 +73,7 @@ class PipelineState(TypedDict, total=False):
     pipeline: str
     intent: Optional[str]
     result: dict
+    last_entities: list
 
 
 # ---------------------------------------------------------------------------
@@ -89,13 +90,22 @@ class PipelineState(TypedDict, total=False):
 def route_node(state: PipelineState, fast_llm) -> PipelineState:
     history = memory.load_memory_variables({})
     normalized_question = normalize_question(state["question"])
+    prior_entities = state.get("last_entities") or []
 
-    route = unified_route(fast_llm, normalized_question, history=history)
+    route = unified_route(fast_llm, normalized_question, history=history,
+                           last_entities=prior_entities)
 
     resolved = normalize_question(route.get("resolved_question", normalized_question))
     route["resolved_question"] = resolved
 
-    return {"route": route, "rewritten_question": resolved}
+    # Carry this turn's entities forward as the hint for the NEXT question.
+    # Only overwrite if this turn actually established something — an
+    # out_of_scope/smalltalk turn (or a turn with no entities) shouldn't
+    # wipe out a still-relevant earlier subject.
+    new_entities = route.get("entities") or []
+    next_last_entities = new_entities if new_entities else prior_entities
+
+    return {"route": route, "rewritten_question": resolved, "last_entities": next_last_entities}
 
 
 def dispatch(state: PipelineState):

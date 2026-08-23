@@ -25,6 +25,9 @@ ONLY valid JSON. No prose, no markdown fences — JSON only.
 Conversation history (most recent turns):
 {history}
 
+Most recently discussed player/team, tracked explicitly across turns (may be
+empty if nothing relevant has been discussed yet): {last_entities}
+
 Latest question:
 {question}
 
@@ -33,17 +36,19 @@ STEP 0 — Resolve references using history
 ==================================================
 If the latest question uses a pronoun or vague reference ("he", "his", "him",
 "she", "her", "they", "that player", "that team", "his wife", "the player
-mentioned earlier", etc.) AND the conversation history makes it UNAMBIGUOUS
-which single player/team it refers to (i.e. exactly one player/team was the
-subject of the immediately preceding turn), rewrite the question substituting
-the pronoun with that exact player/team name. Keep the player's name in
-whatever form it already appears in the history — do not expand, correct, or
-reformat it.
+mentioned earlier", etc.):
+- If "Most recently discussed player/team" above has EXACTLY ONE name in it,
+  resolve the pronoun to that name — trust this field over trying to parse
+  the raw conversation history yourself (the history may contain markdown
+  tables or SQL output that are hard to parse reliably).
+- Otherwise (empty, or more than one recent name and it's unclear which),
+  fall back to the conversation history text. Only resolve if it's
+  UNAMBIGUOUS which single player/team the pronoun refers to.
 
-Do NOT invent or guess an entity that isn't clearly established in the
-history. If more than one player/team was recently discussed and it's not
-clear which one the pronoun refers to, or no relevant entity appears in
-history at all, leave the question exactly as written (do not guess).
+Keep the player's name in whatever form it already appears — do not expand,
+correct, or reformat it. Do NOT invent or guess an entity that isn't clearly
+established. If still ambiguous or nothing relevant is established, leave the
+question exactly as written (do not guess).
 
 Put the result (resolved if possible, otherwise unchanged) in
 "resolved_question". All later steps below reason about "resolved_question",
@@ -163,15 +168,19 @@ Output format — return ONLY this JSON shape
 """
 
 
-def unified_route(llm, question, history=""):
+def unified_route(llm, question, history="", last_entities=None):
     prompt = PromptTemplate(
         template=UNIFIED_ROUTER_PROMPT,
-        input_variables=["question", "history"],
+        input_variables=["question", "history", "last_entities"],
     )
 
     chain = prompt | llm
 
-    response = chain.invoke({"question": question, "history": history})
+    response = chain.invoke({
+        "question": question,
+        "history": history,
+        "last_entities": ", ".join(last_entities) if last_entities else "(none)",
+    })
 
     usage = response.response_metadata["token_usage"]
 

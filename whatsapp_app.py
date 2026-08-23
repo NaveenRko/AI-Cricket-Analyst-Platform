@@ -40,10 +40,10 @@ llm = ChatOpenAI(
     base_url="https://integrate.api.nvidia.com/v1",
     model="openai/gpt-oss-120b",
     temperature=0,
-    timeout=45,       # fail fast instead of the openai SDK's 600s default;
-                      # 45s (not 30s) since this is now only tier-2 fallback
-                      # for SQL and the main path for rag/tavily/comparator
-    max_retries=1,    # 1 retry, not the default 2 (each with backoff)
+    timeout=30,       # fail fast instead of the openai SDK's 600s default
+    max_retries=0,    # was 1: a retry against the SAME struggling endpoint
+                      # just doubles the wait (45s+45s=~90s, matches the
+                      # observed 92s timeout) for little reliability gain
 )
 
 # gpt-oss-120b is a REASONING model (see build.nvidia.com/openai/gpt-oss-120b:
@@ -185,12 +185,23 @@ compiled_graph = build_graph(llm, fast_llm)
 def run_pipeline(question: str) -> dict:
     start_time = time.time()
 
+    # last_entities tracks the most recently discussed player/team explicitly
+    # (set by route_node from the router's own entity extraction), rather
+    # than relying on the LLM re-parsing raw conversation history — which
+    # can include markdown SQL tables that are hard for a small fast_llm to
+    # extract a name from reliably. Each compiled_graph.invoke() call starts
+    # a fresh graph state, so this needs to be carried across turns via
+    # Streamlit's session_state.
+    prior_entities = st.session_state.get("last_entities", [])
+
     # Single LangGraph invocation now handles: pronoun rewrite, smalltalk,
     # out-of-scope/injection detection, pipeline choice, sql sub-intent, and
     # (for multi-entity comparisons) fanning out one lookup per entity and
     # synthesizing the final comparison. No classifier, no separate
     # pipeline_router/sql_intent_router calls.
-    final_state = compiled_graph.invoke({"question": question})
+    final_state = compiled_graph.invoke({"question": question, "last_entities": prior_entities})
+
+    st.session_state["last_entities"] = final_state.get("last_entities", prior_entities)
 
     final_answer = final_state["final_answer"]
     pipeline = final_state.get("pipeline")
