@@ -70,11 +70,13 @@ llm = ChatGroq(
 ])
 
 # Routing is pure JSON classification — it gains nothing from reasoning
-# depth — so it uses small, fast, non-reasoning models. Groq's
-# llama-3.1-8b-instant has the most generous free-tier quota (14,400
-# requests/day) of any Groq model, making it the natural primary for the
-# highest-frequency call in the whole graph. llama-3.3-70b-versatile is a
-# stronger second-tier Groq fallback before dropping to NVIDIA entirely.
+# depth — so it uses small, fast, non-reasoning models. llama-3.1-8b-instant
+# was tried as primary but proved unreliable for both routing classification
+# AND SQL generation (only gpt-oss-20b/120b get Groq's *strict* structured-
+# output support — 8b-instant doesn't, so Tier-0 structured extraction was
+# silently failing and falling to free-text SQL that dropped WHERE clauses).
+# llama-3.3-70b-versatile is the primary now — noticeably stronger
+# instruction-following, still far faster than gpt-oss-120b was on NVIDIA.
 def _nvidia_fast_candidate(model_name: str, timeout: int = 15) -> ChatOpenAI:
     return ChatOpenAI(
         api_key=NVIDIA_API_KEY,
@@ -87,14 +89,14 @@ def _nvidia_fast_candidate(model_name: str, timeout: int = 15) -> ChatOpenAI:
 
 
 fast_llm = ChatGroq(
-    model="llama-3.1-8b-instant",
+    model="llama-3.3-70b-versatile",
     api_key=GROQ_API_KEY,
     temperature=0,
     timeout=15,
     max_retries=0,
 ).with_fallbacks([
     ChatGroq(
-        model="llama-3.3-70b-versatile",
+        model="llama-3.1-8b-instant",
         api_key=GROQ_API_KEY,
         temperature=0,
         timeout=15,

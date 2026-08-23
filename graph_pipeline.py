@@ -143,18 +143,44 @@ def dispatch(state: PipelineState):
 # ---------------------------------------------------------------------------
 # Terminal single-pipeline nodes
 # ---------------------------------------------------------------------------
+def _result_mentions_entities(df, entities) -> bool:
+    """Sanity check: if the question named specific player(s), the SQL
+    result should actually contain that name somewhere (a player_name
+    column, typically). A result that's non-empty but never mentions the
+    player asked about is the signature of a query that silently dropped
+    its WHERE-clause player filter and aggregated across everyone instead
+    (e.g. "how many runs he scored" -> SUM(ps.runs) with no player filter
+    -> a plausible-looking but wrong single number). If nothing was named
+    (a ranking question, "who scored the most"), there's nothing to check
+    against, so this passes trivially."""
+    if not entities:
+        return True
+    if df is None or df.empty:
+        return False
+    blob = " ".join(df.astype(str).values.flatten()).lower()
+    return any(name.lower() in blob for name in entities)
+
+
 def sql_node(state: PipelineState, llm, fast_llm) -> PipelineState:
     sql_intent = state["route"]["sql_intent"] or "batting"
     agent_fn = SQL_AGENT_MAP[sql_intent]
     question = state["rewritten_question"]
+    entities = state["route"].get("entities") or []
 
     # Tier 1: fast, non-reasoning model. Covers the large majority of
     # straightforward stat lookups against a fixed, well-documented schema.
     sql_result = agent_fn(fast_llm, question)
 
-    if sql_result["result_df"] is None or sql_result["result_df"].empty:
-        # Tier 2: retry with the deep reasoning model before giving up on
-        # SQL entirely — catches trickier questions the fast model missed.
+    tier1_valid = (
+        sql_result["result_df"] is not None
+        and not sql_result["result_df"].empty
+        and _result_mentions_entities(sql_result["result_df"], entities)
+    )
+
+    if not tier1_valid:
+        # Tier 2: retry with the deep reasoning model — triggers not just
+        # on an empty result, but also on a non-empty result that never
+        # mentions the player(s) the question was actually about.
         sql_result = agent_fn(llm, question)
 
     if sql_result["result_df"] is not None and not sql_result["result_df"].empty:
