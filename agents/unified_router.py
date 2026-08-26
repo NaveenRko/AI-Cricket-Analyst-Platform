@@ -208,7 +208,13 @@ def unified_route(llm, question, history="", last_entities=None):
         "last_entities": ", ".join(last_entities) if last_entities else "(none)",
     })
 
-    usage = response.response_metadata["token_usage"]
+    # .get(...) with a default — response_metadata's shape can vary by
+    # provider/langchain version (e.g. when this falls back from Groq to
+    # the NVIDIA-hosted model, or after a langchain upgrade), and "usage"
+    # below is never actually read downstream. A missing key here must
+    # never be allowed to crash the whole route_node — that leaves the
+    # graph state without a "route" key and dispatch() blows up next.
+    usage = response.response_metadata.get("token_usage", {})
 
     try:
         content = response.content.strip()

@@ -109,7 +109,14 @@ def route_node(state: PipelineState, fast_llm) -> PipelineState:
 
 
 def dispatch(state: PipelineState):
-    route = state["route"]
+    # If the "route" node itself raised (e.g. an unexpected KeyError while
+    # parsing the LLM response), _timed() catches it and returns a state
+    # update with no "route" key at all rather than letting it crash the
+    # graph invocation. Fall back to rag on the raw question instead of
+    # raising a second, harder-to-diagnose KeyError right here.
+    route = state.get("route")
+    if route is None:
+        return "rag"
 
     if route["type"] == "smalltalk":
         return "smalltalk"
@@ -222,7 +229,10 @@ def sql_node(state: PipelineState, llm, fast_llm) -> PipelineState:
 
 
 def rag_node(state: PipelineState, llm) -> PipelineState:
-    result = get_rag_hybrid_answer(llm, state["rewritten_question"])
+    # Falls back to the raw "question" if routing failed upstream and
+    # "rewritten_question" was never set (see dispatch()'s route=None case).
+    question = state.get("rewritten_question") or state["question"]
+    result = get_rag_hybrid_answer(llm, question)
     return {"pipeline": "rag", "intent": "rag", "result": result, "final_answer": result["answer"]}
 
 
