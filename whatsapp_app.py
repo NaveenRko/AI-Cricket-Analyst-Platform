@@ -272,12 +272,11 @@ st.markdown('<div class="wa-chat">', unsafe_allow_html=True)
 
 for i, msg in enumerate(st.session_state.messages):
     is_out = msg["role"] == "user"
-    tag = (
-        f'<div class="wa-pipeline-tag">via {msg["pipeline"]}'
-        f'{" · " + msg["intent"] if msg.get("intent") else ""}</div>'
-        if (not is_out and msg.get("pipeline")) else ""
-    )
-    render_bubble(msg["text"], msg["time"], is_out, tag)
+
+    # Pipeline/intent are still stored on each message (used by feedback
+    # logging below and available for future debugging), but are no longer
+    # rendered under the bubble — the UI just shows the message text.
+    render_bubble(msg["text"], msg["time"], is_out)
 
     # feedback controls per assistant answer (native widgets, can't be pure HTML)
     if not is_out and not msg.get("feedback_given") and msg.get("query_log_id"):
